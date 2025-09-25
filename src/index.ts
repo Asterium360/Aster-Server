@@ -1,30 +1,21 @@
+// src/index.ts
 import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import { sequelize } from './db.ts';
-
-const app = express()
-
-app.use(cors());
-app.use(helmet());
-app.use(express.json());
-app.use(morgan('dev'));
-
-// Ruta de prueba
-app.get('/', (_req, res) => {
-  res.json({ message: 'Asterium API 🚀 funcionando!' });
-});
+import app from './app.js';
+import { sequelize } from './db.js';
+import './models/associations.js'; // registra relaciones
 
 const PORT = process.env.PORT || 4000;
 
 (async () => {
   try {
     await sequelize.authenticate();
+    if (process.env.NODE_ENV !== 'production') {
+      await sequelize.sync(); // crea tablas a partir de modelos (solo dev)
+    }
     console.log('✅ Conectado a MySQL');
-    app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
-  } catch (err) {
-    console.error('❌ Error al conectar a MySQL:', err);
+    app.listen(PORT, () => console.log(`API: http://localhost:${PORT}`));
+  } catch (e) {
+    console.error('❌ Error al conectar a MySQL:', e);
+    process.exit(1);
   }
 })();
