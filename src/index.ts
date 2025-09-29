@@ -4,6 +4,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { sequelize } from './db.js';
+import authRoutes from "./routes/auth.routes.js";
+import asteriumRoutes from "./routes/asterium.routes.js";
 
 // 🔑 importa los modelos para que Sequelize los conozca
 import { User } from './models/User.js';
@@ -19,6 +21,8 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(morgan('dev'));
+app.use("/api/auth", authRoutes);
+app.use("/api/discoveries", asteriumRoutes);
 
 // Ruta de prueba
 app.get('/', (_req, res) => {
