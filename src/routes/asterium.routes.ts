@@ -2,7 +2,7 @@ import { Router } from "express";
 import { requireAuth } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
 import { createPostSchema } from "../schemas/asterium.schema.js"; 
-import type { id } from "zod/locales";
+//import type { id } from "zod/locales";
 
 const router = Router();
 
