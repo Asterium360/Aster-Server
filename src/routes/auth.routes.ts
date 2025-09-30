@@ -7,12 +7,12 @@ import { requireAuth, requireAdmin } from "../middlewares/auth.js";
 const authRouter = express.Router();
 
 // Registro de usuario
-authRouter.post("/register", validate(registerSchema), authController.registerController);
+authRouter.post("/register", validate(registerSchema), authController.register);
 
 // Login de usuario
-authRouter.post("/login", validate(loginSchema), authController.loginController);
+authRouter.post("/login", validate(loginSchema), authController.login);
 
 // Bonus: promover a admin (solo un admin puede hacerlo)
-// authRouter.put("/promote/:id", requireAuth, requireAdmin, authController.promoteToAdmin);
+authRouter.put("/promote/:id", requireAuth, requireAdmin, authController.promoteToAdmin);
 
 export default authRouter;

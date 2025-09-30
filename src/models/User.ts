@@ -1,92 +1,51 @@
-import { DataTypes } from "sequelize";
-import bcrypt from "bcryptjs";
-import {sequelize} from "..db.js"
+import { DataTypes, Model } from 'sequelize';
+import type { Optional } from 'sequelize';
+import { sequelize } from '../db.js';
 
-// NOTA: mantenemos 'users' como nombre de tabla
-const UserModel = db_connection.define(
-  "users",
+interface UserAttrs {
+  id: number;
+  email: string;
+  username: string;
+  password_hash: string;
+  role_id: number;                 // 1=admin, 2=user (por defecto)
+  display_name?: string | null;
+  is_active: boolean;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+type UserCreation = Optional<
+  UserAttrs,
+  'id' | 'display_name' | 'is_active' | 'created_at' | 'updated_at' | 'role_id'
+>;
+
+export class User extends Model<UserAttrs, UserCreation> implements UserAttrs {
+  declare id: number;
+  declare email: string;
+  declare username: string;
+  declare password_hash: string;
+  declare role_id: number;
+  declare display_name: string | null;
+  declare is_active: boolean;
+  declare readonly created_at: Date;
+  declare readonly updated_at: Date;
+}
+
+User.init(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
+    id: { type: DataTypes.INTEGER.UNSIGNED, autoIncrement: true, primaryKey: true },
+    email: { type: DataTypes.STRING(191), allowNull: false, unique: true },
+    username: { type: DataTypes.STRING(50), allowNull: false, unique: true },
+    password_hash: { type: DataTypes.STRING(100), allowNull: false },
 
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      validate: {
-        notNull: { msg: "este campo no puede estar vacío" },
-        len: { args: [2, 100], msg: "este campo no permite menos de 2 caracteres" },
-      },
-    },
+    // ← user por defecto
+    role_id: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false, defaultValue: 2 },
 
-    email: {
-      type: DataTypes.STRING(191),
-      allowNull: false,
-      unique: true,
-      set(value) {
-        // normalizamos email
-        this.setDataValue("email", String(value).trim().toLowerCase());
-      },
-      validate: {
-        notNull: { msg: "este campo no puede estar vacío" },
-        isEmail: { msg: "email inválido" },
-      },
-    },
+    display_name: { type: DataTypes.STRING(100), allowNull: true, defaultValue: null },
+    is_active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
 
-    // Guardamos SIEMPRE el HASH aquí.
-    // Puedes enviar password en texto plano desde el controlador;
-    // este modelo lo hashea automáticamente en los hooks.
-    password: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      validate: {
-        notNull: { msg: "este campo no puede estar vacío" },
-      },
-    },
-
-    role: {
-      type: DataTypes.STRING(10),
-      defaultValue: "user",
-      validate: {
-        isIn: {
-          args: [["admin", "user"]],
-          msg: "rol inválido",
-        },
-      },
-    },
+    created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+    updated_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   },
-  {
-    tableName: "users",
-    timestamps: false, // déjalo en false si tu tabla no tiene createdAt/updatedAt
-    defaultScope: {
-      // Nunca exponer el hash por defecto
-      attributes: { exclude: ["password"] },
-    },
-    scopes: {
-      withPassword: {}, // sin exclusiones (útil para login)
-    },
-    indexes: [{ unique: true, fields: ["email"] }],
-  }
+  { sequelize, tableName: 'users', timestamps: false }
 );
-
-// ---- Hooks: hashear si la contraseña cambió y no parece un hash
-UserModel.addHook("beforeSave", async (user) => {
-  if (user.changed("password")) {
-    const raw = String(user.getDataValue("password") || "");
-    const looksHashed = raw.startsWith("$2a$") || raw.startsWith("$2b$") || raw.startsWith("$2y$");
-    if (!looksHashed) {
-      const hash = await bcrypt.hash(raw, 10);
-      user.setDataValue("password", hash);
-    }
-  }
-});
-
-// Método de instancia para comparar contraseñas
-UserModel.prototype.checkPassword = function (plain) {
-  const hash = this.getDataValue("password");
-  return bcrypt.compare(String(plain), String(hash || ""));
-};
-
-export default UserModel;
