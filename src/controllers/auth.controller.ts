@@ -1,49 +1,91 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User.js';
-import type { AuthTokenPayload } from '../middlewares/auth.js';
+import jwt from "jsonwebtoken";
+import UserModel from "../models/User.js";
 
-export async function register(req: any, res: any) {
-  const { email, username, password, display_name } = req.body;
+// tiempo de vida del token
+const TOKEN_TTL = "15m";
 
-  const exists = await User.findOne({ where: { email } });
-  if (exists) return res.status(409).json({ error: 'Email en uso' });
-
-  const hash = await bcrypt.hash(password, 10);
-  const user = await User.create({ email, username, password_hash: hash, display_name }); // role_id=2 por defecto
-
-  const payload: AuthTokenPayload = {
-    sub:  String(user.id), role: 'user', iat: Math.floor(Date.now()/1000)
-  };
-  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
-
-  res.status(201).json({ token, user: { id: user.id, email: user.email, username: user.username } });
+function sendSequelizeError(err, res) {
+  if (err?.name === "SequelizeUniqueConstraintError") {
+    const field = err?.errors?.[0]?.path || "dato";
+    return res.status(409).json({ error: `${field} en uso` });
+  }
+  if (err?.name === "SequelizeValidationError") {
+    const msg = err?.errors?.[0]?.message || "Datos inválidos";
+    return res.status(400).json({ error: msg });
+  }
+  console.error("[AUTH] Error no controlado:", err);
+  return res.status(500).json({ error: "Error interno del servidor" });
 }
 
-export async function login(req: any, res: any) {
-  const { email, password } = req.body;
+export const registerController = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body || {};
 
-  const user = await User.findOne({ where: { email } });
-  if (!user) return res.status(401).json({ error: 'Credenciales inválidas' });
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "name, email y password son obligatorios." });
+    }
 
-  const ok = await bcrypt.compare(password, user.password_hash);
-  if (!ok) return res.status(401).json({ error: 'Credenciales inválidas' });
+    // Comprobación previa de duplicado (evita chocar con unique)
+    const prev = await UserModel.findOne({ where: { email: String(email).toLowerCase().trim() } });
+    if (prev) return res.status(409).json({ error: "email en uso" });
 
-  const role = user.role_id === 1 ? 'admin' : 'user';
-  const payload: AuthTokenPayload = { sub:  String(user.id), role, iat: Math.floor(Date.now()/1000) };
-  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
+    // Creamos: el modelo hashea automáticamente el password si viene en texto plano
+    const user = await UserModel.create({
+      name: String(name).trim(),
+      email: String(email).trim().toLowerCase(),
+      password: String(password), // <-- texto plano; el hook lo hashea
+      role: role === "admin" ? "admin" : "user",
+    });
 
-  res.json({ token });
-}
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error("[CONFIG] Falta JWT_SECRET");
+      return res.status(500).json({ error: "Configuración JWT faltante" });
+    }
 
-// (bonus) promover a admin manualmente
-export async function promoteToAdmin(req: any, res: any) {
-  const { id } = req.params;
-  const user = await User.findByPk(Number(id));
-  if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+    const payload = { sub: String(user.id), role: user.role };
+    const token = jwt.sign(payload, secret, { expiresIn: TOKEN_TTL });
 
-  user.role_id = 1;
-  await user.save();
+    // user está bajo defaultScope, no incluye password
+    return res.status(201).json({
+      message: "usuario registrado exitosamente",
+      token,
+      user,
+    });
+  } catch (error) {
+    return sendSequelizeError(error, res);
+  }
+};
 
-  res.json({ message: 'Usuario promovido a admin', id: user.id });
-}
+export const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body || {};
+    if (!email || !password) {
+      return res.status(400).json({ error: "email y password son obligatorios." });
+    }
+
+    // Necesitamos el hash → usar scope que incluya password
+    const user = await UserModel.scope("withPassword").findOne({
+      where: { email: String(email).trim().toLowerCase() },
+    });
+    if (!user) return res.status(401).json({ error: "Credenciales inválidas" });
+
+    const ok = await user.checkPassword(password);
+    if (!ok) return res.status(401).json({ error: "Credenciales inválidas" });
+
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error("[CONFIG] Falta JWT_SECRET");
+      return res.status(500).json({ error: "Configuración JWT faltante" });
+    }
+
+    const payload = { sub: String(user.id), role: user.role };
+    const token = jwt.sign(payload, secret, { expiresIn: TOKEN_TTL });
+
+    // Devuelve el usuario sin el hash (aplicamos defaultScope de nuevo)
+    const safeUser = await UserModel.findByPk(user.id); // defaultScope oculta password
+    return res.json({ message: "login exitoso", token, user: safeUser });
+  } catch (error) {
+    return sendSequelizeError(error, res);
+  }
+};

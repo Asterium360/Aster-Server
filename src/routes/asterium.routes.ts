@@ -1,50 +1,21 @@
-import { Router } from "express";
+import express, { Router } from "express";
+import * as asteriumController from "../controllers/asterium.controller.js";
 import { requireAuth } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
-import { createPostSchema } from "../schemas/asterium.schema.js"; 
-//import type { id } from "zod/locales";
+import {createDiscoverySchema, updateDiscoverySchema, idParamSchema,} from "../schemas/asterium.schema.js";
 
-const router = Router();
+const asteriumRouter = express.Router();
 
-//Crear un descubriemiento (Este requiere login)
-router.post("/", requireAuth, validate(createPostSchema), (req, res)=>{
-    res.json({
-        message: "Post creado correctamente ✅",
-        data: req.body,
-    });
-});
+// Listado público de descubrimientos publicados
+asteriumRouter.get("/", asteriumController.listPublished);
 
-//Listar todos los descubriemientos
-router.get("/", (_req, res)=>{
-    res.json({
-        message: "Lista de descubrimientos ✅",
-        data: [],
-    });
-});
+// Crear un descubrimiento (por defecto: solo admin, aunque podrías cambiar a permitir "user")
+asteriumRouter.post("/", requireAuth, validate(createDiscoverySchema), asteriumController.createDiscovery);
 
-//Obtener un descubrimiento por ID
-router.get("/:id", (req,res)=> {
-    res.json({
-        message: "Detalle del descubrimiento ✅",
-        id: req.params.id,
-    });
-});
+// Actualizar un descubrimiento
+asteriumRouter.put("/:id", requireAuth, validate(idParamSchema), validate(updateDiscoverySchema), asteriumController.updateDiscovery);
 
-//Actualizar el descubrimiento por ID
-router.put("/:id", requireAuth, validate(createPostSchema), (req, res)=> {
-    res.json({
-        message: "Descubrimiento actualizado ✅",
-        id: req.params.id,
-        data: req.body,
-    });
-});
+// Eliminar un descubrimiento
+asteriumRouter.delete("/:id", requireAuth, validate(idParamSchema), asteriumController.deleteDiscovery);
 
-//Eliminar un descubrimiento por ID, esto requiere login
-router.delete("/:id", requireAuth, (req, res) => {
-    res.json({
-        message: "Descubrimiento eliminado ✅",
-        id: req.params.id
-    });
-});
-
-export default router;
+export default asteriumRouter;

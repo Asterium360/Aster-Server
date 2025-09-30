@@ -1,24 +1,18 @@
-import { Router } from "express";
+import express, { Router } from "express";
+import * as authController from "../controllers/auth.controller.js";
 import { validate } from "../middlewares/validate.js";
 import { registerSchema, loginSchema } from "../schemas/auth.schema.js";
+import { requireAuth, requireAdmin } from "../middlewares/auth.js";
 
-const router = Router(); 
+const authRouter = express.Router();
 
-//Registro de usuario
-router.post("/resgister", validate(registerSchema), (req, res) =>{
-    res.json ({
-        message: "Registro válido ✅",
-        data: req.body,
-    });
-});
+// Registro de usuario
+authRouter.post("/register", validate(registerSchema), authController.registerController);
 
-//Login de usuario 
-router.post("/login", validate(loginSchema), (req, res)=> {
-    res.json({
-        message: "Login válido ✅",
-        data: req.body,
-    });
-});
+// Login de usuario
+authRouter.post("/login", validate(loginSchema), authController.loginController);
 
-export default router;
+// Bonus: promover a admin (solo un admin puede hacerlo)
+// authRouter.put("/promote/:id", requireAuth, requireAdmin, authController.promoteToAdmin);
 
+export default authRouter;
