@@ -12,7 +12,7 @@ authRouter.post("/register", validate(registerSchema), authController.register);
 // Login de usuario
 authRouter.post("/login", validate(loginSchema), authController.login);
 
-// Bonus: promover a admin (solo un admin puede hacerlo)
+// Esto es Bonus: promover a admin (solo un admin puede hacerlo)
 authRouter.put("/promote/:id", requireAuth, requireAdmin, authController.promoteToAdmin);
 
 export default authRouter;
