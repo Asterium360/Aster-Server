@@ -47,5 +47,11 @@ User.init(
     created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     updated_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   },
-  { sequelize, tableName: 'users', timestamps: false }
+  {
+    sequelize,
+    tableName: "users",
+    timestamps: true, // Sequelize añadirá createdAt y updatedAt
+    createdAt: "created_at", // usa tus nombres de columnas
+    updatedAt: "updated_at",
+  }
 );
