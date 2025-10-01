@@ -46,3 +46,5 @@ const PORT = process.env.PORT || 4000;
     console.error('❌ Error al conectar a MySQL:', err);
   }
 })();
+
+export default app; // para los tests
