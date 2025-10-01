@@ -13,9 +13,13 @@ asteriumRouter.get("/", asteriumController.listPublished);
 asteriumRouter.post("/", requireAuth, validate(createDiscoverySchema), asteriumController.createDiscovery);
 
 // Actualizar un descubrimiento
-asteriumRouter.put("/:id", requireAuth, validate(idParamSchema), validate(updateDiscoverySchema), asteriumController.updateDiscovery);
+asteriumRouter.put("/:id", requireAuth,
+  validate(idParamSchema, "params"),   // 👈 valida el parámetro de la URL
+  validate(updateDiscoverySchema, "body"), // 👈 valida el body
+  asteriumController.updateDiscovery
+);
 
 // Eliminar un descubrimiento
-asteriumRouter.delete("/:id", requireAuth, validate(idParamSchema), asteriumController.deleteDiscovery);
+asteriumRouter.delete("/:id", requireAuth, validate(idParamSchema, "params"), asteriumController.deleteDiscovery);
 
 export default asteriumRouter;
