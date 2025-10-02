@@ -9,6 +9,17 @@ export async function listPublished(_req: any, res: any) {
   res.json(rows);
 }
 
+export async function getDiscovery(req:any, res:any){
+  const {id} = req.params;
+  const row = await Asterium.findByPk(Number(id),{
+    include: [{association: "author", attributes:["id", "username", "email"]}]
+  });
+  if (!row) {
+    return res.status(404).json({error:"Descubrimiento no encontrado"});
+  }
+  res.json(row);
+}
+
 export async function createDiscovery(req: any, res: any) {
   const body = req.body;
   const row = await Asterium.create({
