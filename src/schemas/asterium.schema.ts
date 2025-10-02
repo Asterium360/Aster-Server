@@ -35,5 +35,5 @@ export const updateDiscoverySchema = z.object({
 
 // Validación de params
 export const idParamSchema = z.object({
-  id: z.string().regex(/^\d+$/, "El id debe ser un número entero"),
+  id: z.coerce.number().int().positive("El id debe ser un número positivo"),
 });
