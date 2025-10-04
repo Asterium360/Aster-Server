@@ -12,6 +12,7 @@ import authRoutes from "./routes/auth.routes.js";
 import asteriumRoutes from "./routes/asterium.routes.js";
 
 
+
 // asociaciones (ejemplo: un usuario puede tener muchos descubrimientos)
 User.hasMany(Asterium, { foreignKey: 'author_id', as: 'discoveries' });
 Asterium.belongsTo(User, { foreignKey: 'author_id', as: 'author' });

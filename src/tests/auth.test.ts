@@ -1,7 +1,7 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 // 🔑 Importación de la app ajustada para tu estructura de carpetas
-import app from './../index.js'; 
+import app from '../index.js'; 
 import { Asterium } from '../models/Asterium.js'; 
 // 🔑 CORRECCIÓN: Usar 'import type' para que sea compatible con verbatimModuleSyntax
 import type { AsteriumAttrs } from '../models/Asterium.js'; 
