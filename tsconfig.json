@@ -7,7 +7,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
-    "types": ["node"],
+    "types": ["node", "jest"],
 
     "sourceMap": true,
     "declaration": true,
@@ -24,10 +24,5 @@
     "verbatimModuleSyntax": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"],
-  "allowImportingTsExtensions": true
-  }
-
-
-
-
+  "exclude": ["node_modules", "dist"]
+}

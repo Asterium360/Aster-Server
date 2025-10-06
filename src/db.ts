@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 
-const dbName: string =
+export const dbName: string =
   process.env.NODE_ENV === 'test'
     ? (process.env.DB_NAME_TEST ?? process.env.DB_NAME)!
     : (process.env.DB_NAME!);

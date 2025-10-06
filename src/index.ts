@@ -16,7 +16,7 @@ import asteriumRoutes from "./routes/asterium.routes.js";
 User.hasMany(Asterium, { foreignKey: 'author_id', as: 'discoveries' });
 Asterium.belongsTo(User, { foreignKey: 'author_id', as: 'author' });
 
-const app = express();
+export const app = express();
 
 app.use(cors());
 app.use(helmet());
