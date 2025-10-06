@@ -6,16 +6,23 @@ import {createDiscoverySchema, updateDiscoverySchema, idParamSchema,} from "../s
 
 const asteriumRouter = express.Router();
 
-// Listado público de descubrimientos publicados
-asteriumRouter.get("/", asteriumController.listPublished);
+// Listado de descubrimientos publicados (solo usuarios logueados)
+asteriumRouter.get("/", requireAuth, asteriumController.listPublished);
+
+//Obtener un descubrimiento ESPECÍFICO por ID (solo usuarios logueados)
+asteriumRouter.get("/:id", requireAuth, validate(idParamSchema, "params"), asteriumController.getDiscovery);
 
 // Crear un descubrimiento (por defecto: solo admin, aunque podrías cambiar a permitir "user")
 asteriumRouter.post("/", requireAuth, validate(createDiscoverySchema), asteriumController.createDiscovery);
 
 // Actualizar un descubrimiento
-asteriumRouter.put("/:id", requireAuth, validate(idParamSchema), validate(updateDiscoverySchema), asteriumController.updateDiscovery);
+asteriumRouter.put("/:id", requireAuth,
+  validate(idParamSchema, "params"),   // 👈 valida el parámetro de la URL
+  validate(updateDiscoverySchema, "body"), // 👈 valida el body
+  asteriumController.updateDiscovery
+);
 
 // Eliminar un descubrimiento
-asteriumRouter.delete("/:id", requireAuth, validate(idParamSchema), asteriumController.deleteDiscovery);
+asteriumRouter.delete("/:id", requireAuth, validate(idParamSchema, "params"), asteriumController.deleteDiscovery);
 
 export default asteriumRouter;

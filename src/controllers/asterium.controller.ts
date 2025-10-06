@@ -9,11 +9,22 @@ export async function listPublished(_req: any, res: any) {
   res.json(rows);
 }
 
+export async function getDiscovery(req:any, res:any){
+  const {id} = req.params;
+  const row = await Asterium.findByPk(Number(id),{
+    include: [{association: "author", attributes:["id", "username", "email"]}]
+  });
+  if (!row) {
+    return res.status(404).json({error:"Descubrimiento no encontrado"});
+  }
+  res.json(row);
+}
+
 export async function createDiscovery(req: any, res: any) {
   const body = req.body;
   const row = await Asterium.create({
     ...body,
-    author_id: req.user!.sub,
+    author_id: Number(req.user!.sub),
     published_at: body.status === 'published' ? new Date() : null,
   });
   res.status(201).json(row);
@@ -24,7 +35,7 @@ export async function updateDiscovery(req: any, res: any) {
   const row = await Asterium.findByPk(Number(id));
   if (!row) return res.status(404).json({ error: 'No encontrado' });
 
-  if (req.user!.role !== 'admin' && row.author_id !== req.user!.sub) {
+  if (req.user!.role !== 'admin' && row.author_id !== Number(req.user!.sub)) {
     return res.status(403).json({ error: 'Sin permisos' });
   }
 
@@ -38,7 +49,7 @@ export async function deleteDiscovery(req: any, res: any) {
   const row = await Asterium.findByPk(Number(id));
   if (!row) return res.status(404).json({ error: 'No encontrado' });
 
-  if (req.user!.role !== 'admin' && row.author_id !== req.user!.sub) {
+  if (req.user!.role !== 'admin' && row.author_id !== Number(req.user!.sub)) {
     return res.status(403).json({ error: 'Sin permisos' });
   }
 
