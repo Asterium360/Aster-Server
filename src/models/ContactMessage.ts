@@ -60,5 +60,3 @@ ContactMessage.init(
     updatedAt: 'updated_at',
   }
 );
-// opcional: asociación si quieres
-// ContactMessage.belongsTo(User, { foreignKey: 'user_id' });
