@@ -7,7 +7,11 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
+
     "types": ["node", "jest", "nodemailer"],
+
+    "types": ["node", "jest", "supertest"],
+
 
     "sourceMap": true,
     "declaration": true,

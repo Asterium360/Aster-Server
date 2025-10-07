@@ -15,6 +15,7 @@ import contactRoutes from "./routes/contact.routes.js";
 
 
 
+
 // asociaciones (ejemplo: un usuario puede tener muchos descubrimientos)
 User.hasMany(Asterium, { foreignKey: 'author_id', as: 'discoveries' });
 Asterium.belongsTo(User, { foreignKey: 'author_id', as: 'author' });
@@ -53,3 +54,5 @@ const PORT = process.env.PORT || 4000;
     console.error('❌ Error al conectar a MySQL:', err);
   }
 })();
+
+export default app; // para los tests
