@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import 'dotenv/config';
 
 export const dbName: string =
   process.env.NODE_ENV === 'test'
