@@ -50,8 +50,13 @@ User.init(
   {
     sequelize,
     tableName: "users",
-    timestamps: true, // Sequelize añadirá createdAt y updatedAt
-    createdAt: "created_at", // usa tus nombres de columnas
+    timestamps: true,
+    createdAt: "created_at",
     updatedAt: "updated_at",
+    defaultScope: { attributes: { exclude: ["password_hash"] } },
+     scopes: {
+      // 👉 así sí tipa: incluye password_hash cuando necesites el hash
+      withPassword: { attributes: { include: ["password_hash"] } },
+    },
   }
 );

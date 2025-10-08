@@ -23,18 +23,22 @@ export async function register(req: any, res: any) {
 export async function login(req: any, res: any) {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ where: { email } });
+  const user = await User.scope('withPassword').findOne({ where: { email } });
   if (!user) return res.status(401).json({ error: 'Credenciales inválidas' });
 
   const ok = await bcrypt.compare(password, user.password_hash);
   if (!ok) return res.status(401).json({ error: 'Credenciales inválidas' });
 
   const role = user.role_id === 1 ? 'admin' : 'user';
-  const payload: AuthTokenPayload = { sub:  String(user.id), role, iat: Math.floor(Date.now()/1000) };
+  const payload: AuthTokenPayload = { sub: String(user.id), role, iat: Math.floor(Date.now()/1000) };
   const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
 
-  res.json({ token });
+  res.json({
+    token,
+    user: { id: user.id, email: user.email, username: user.username, role }
+  });
 }
+
 
 // (bonus) promover a admin manualmente
 export async function promoteToAdmin(req: any, res: any) {
