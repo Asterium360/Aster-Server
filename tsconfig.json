@@ -8,9 +8,9 @@
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
 
-    "types": ["node", "jest", "nodemailer"],
+    "types": ["node", "jest", "nodemailer", "supertest"],
 
-    "types": ["node", "jest", "supertest"],
+  
 
 
     "sourceMap": true,
