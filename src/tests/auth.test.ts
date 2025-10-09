@@ -242,7 +242,6 @@ const initialAsteriumData: AsteriumAttrs = {
   id: 100,
   author_id: USER_ID,
   title: 'Descubrimiento Inicial Publicado',
-  slug: `descubrimiento-inicial-publicado-${Date.now()}`,
   content_md: 'Contenido de la fila base.',
   status: 'published',
   published_at: new Date(),
