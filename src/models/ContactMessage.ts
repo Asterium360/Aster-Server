@@ -11,15 +11,12 @@ export interface ContactMessageAttrs {
   message: string;
   user_id?: number | null;
   status: 'new' | 'read' | 'replied' | 'closed';
-  ip?: string | null;
-  user_agent?: string | null;
-  source?: string | null;
   created_at?: Date;
   updated_at?: Date;
 }
 type ContactMessageCreation = Optional<
   ContactMessageAttrs,
-  'id' | 'subject' | 'user_id' | 'status' | 'ip' | 'user_agent' | 'source' | 'created_at' | 'updated_at'
+  'id' | 'subject' | 'user_id' | 'status' |'created_at' | 'updated_at'
 >;
 
 export class ContactMessage extends Model<ContactMessageAttrs, ContactMessageCreation> implements ContactMessageAttrs {
@@ -30,9 +27,6 @@ export class ContactMessage extends Model<ContactMessageAttrs, ContactMessageCre
   declare message: string;
   declare user_id: number | null;
   declare status: 'new' | 'read' | 'replied' | 'closed';
-  declare ip: string | null;
-  declare user_agent: string | null;
-  declare source: string | null;
   declare readonly created_at: Date;
   declare readonly updated_at: Date;
 }
@@ -46,9 +40,6 @@ ContactMessage.init(
     message: { type: DataTypes.TEXT, allowNull: false },
     user_id: { type: DataTypes.INTEGER.UNSIGNED, allowNull: true },
     status: { type: DataTypes.ENUM('new', 'read', 'replied', 'closed'), allowNull: false, defaultValue: 'new' },
-    ip: { type: DataTypes.STRING(45), allowNull: true },           // IPv4/IPv6
-    user_agent: { type: DataTypes.STRING(255), allowNull: true },
-    source: { type: DataTypes.STRING(50), allowNull: true },
     created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     updated_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   },
