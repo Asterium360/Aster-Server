@@ -15,7 +15,7 @@ export async function register(req: any, res: any) {
   const payload: AuthTokenPayload = {
     sub:  String(user.id), role: 'user', iat: Math.floor(Date.now()/1000)
   };
-  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
+  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '7d' });
 
   res.status(201).json({ token, user: { id: user.id, email: user.email, username: user.username } });
 }
@@ -31,7 +31,7 @@ export async function login(req: any, res: any) {
 
   const role = user.role_id === 1 ? 'admin' : 'user';
   const payload: AuthTokenPayload = { sub: String(user.id), role, iat: Math.floor(Date.now()/1000) };
-  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
+  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '7d' });
 
   res.json({
     token,
