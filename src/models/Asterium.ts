@@ -1,10 +1,11 @@
 import { DataTypes, Model } from 'sequelize';
 import type { Optional } from 'sequelize';
 import { sequelize } from '../db.js';
+import { url } from 'inspector';
 
 export interface AsteriumAttrs {
   id: number;
-  author_id: number;                  // FK a users.id
+  author_id: number;                  // Foreign key to User model
   title: string;
   excerpt?: string | null;
   content_md: string;
@@ -14,9 +15,10 @@ export interface AsteriumAttrs {
   image_url?: string|null;
   created_at?: Date;
   updated_at?: Date;
+
 }
 
-type AsteriumCreation = Optional<
+export type AsteriumCreation = Optional<
   AsteriumAttrs,
   'id' | 'excerpt' | 'published_at' | 'like_count' | 'image_url' | 'created_at' | 'updated_at'
 >;
@@ -45,6 +47,7 @@ Asterium.init(
     status: { type: DataTypes.ENUM('draft', 'published', 'archived'), allowNull: false, defaultValue: 'draft' },
     published_at: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
     like_count: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false, defaultValue: 0 },
+    image_url: { type: DataTypes.STRING, allowNull: true, defaultValue: null, validate: { isUrl: {msg: 'La imagen debe ser una url valida (http o https)'} } },
     created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     updated_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     image_url: {type: DataTypes.STRING(255), allowNull: true, defaultValue: null, validate: { isUrl: {msg: 'La imagen debe ser una URL válida (http o https)',
