@@ -54,7 +54,7 @@ User.init(
     createdAt: "created_at",
     updatedAt: "updated_at",
     defaultScope: { attributes: { exclude: ["password_hash"] } },
-     scopes: {
+    scopes: {
       // 👉 así sí tipa: incluye password_hash cuando necesites el hash
       withPassword: { attributes: { include: ["password_hash"] } },
     },
