@@ -4,7 +4,7 @@ import { sequelize } from '../db.js';
 
 export interface AsteriumAttrs {
   id: number;
-  author_id: number;                  // FK a users.id
+  author_id: number;                  // Foreign key to User model
   title: string;
   slug: string;
   excerpt?: string | null;
