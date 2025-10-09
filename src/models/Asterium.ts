@@ -49,13 +49,7 @@ Asterium.init(
     like_count: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false, defaultValue: 0 },
     image_url: { type: DataTypes.STRING, allowNull: true, defaultValue: null, validate: { isUrl: {msg: 'La imagen debe ser una url valida (http o https)'} } },
     created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
-    updated_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
-    image_url: {type: DataTypes.STRING(255), allowNull: true, defaultValue: null, validate: { isUrl: {msg: 'La imagen debe ser una URL válida (http o https)',
-        },
-      },
-    },
-
-    
+    updated_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW }, 
   },
   {
   sequelize,
