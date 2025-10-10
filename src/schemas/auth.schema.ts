@@ -12,7 +12,7 @@ export const registerSchema = z.object({
     .max(50, "Máximo 50 caracteres"),
   password: z
     .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres"),
+    .min(5, "La contraseña debe tener al menos 5 caracteres"),
   display_name: z.string().max(100).optional(),
 });
 
@@ -21,5 +21,5 @@ export const loginSchema = z.object({
   email: z.string().email("El email no es válido"),
   password: z
     .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres"),
+    .min(5, "La contraseña debe tener al menos 5 caracteres"),
 });
