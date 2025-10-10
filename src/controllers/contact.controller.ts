@@ -30,9 +30,6 @@ export async function postContact(
     subject: subject || null,
     message,
     user_id: Number.isNaN(userId) ? null : userId,
-    ip: req.ip,
-    user_agent: req.get('user-agent') || null,
-    source: source || 'contact_form',
   });
 
   //  notificación por correo
