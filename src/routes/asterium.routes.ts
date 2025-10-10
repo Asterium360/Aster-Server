@@ -3,6 +3,7 @@ import * as asteriumController from "../controllers/asterium.controller.js";
 import { requireAuth } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
 import {createDiscoverySchema, updateDiscoverySchema, idParamSchema,} from "../schemas/asterium.schema.js";
+import {upload} from "../middlewares/uploadImage.js";
 
 const asteriumRouter = express.Router();
 
@@ -13,7 +14,14 @@ asteriumRouter.get("/", requireAuth, asteriumController.listPublished);
 asteriumRouter.get("/:id", requireAuth, validate(idParamSchema, "params"), asteriumController.getDiscovery);
 
 // Crear un descubrimiento (por defecto: solo admin, aunque podrías cambiar a permitir "user")
-asteriumRouter.post("/", requireAuth, validate(createDiscoverySchema), asteriumController.createDiscovery);
+asteriumRouter.post(
+  "/",
+  requireAuth,
+  upload.single("image"), // 👈 este middleware procesa la imagen antes de pasar al controlador
+  validate(createDiscoverySchema),
+  asteriumController.createDiscovery
+);
+
 
 // Actualizar un descubrimiento
 asteriumRouter.put("/:id", requireAuth,

@@ -29,10 +29,12 @@ export async function createDiscovery(req: any, res: any) {
       return res.status(401).json({ error: 'Usuario no autenticado' });
     }
 
+    const image_url = req.file? req.file.path: null;
+
     const row = await Asterium.create({
       ...body,
       author_id: authorId,
-      image_url: body.image_url || null, // 🖼️ Si no se envía, será null
+      image_url,
       published_at: body.status === 'published' ? new Date() : null,
     });
 
