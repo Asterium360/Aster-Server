@@ -22,7 +22,10 @@ ContactMessage.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 export const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true,
+  }));
 app.use(helmet());
 app.use(express.json());
 app.use(morgan('dev'));
@@ -34,5 +37,11 @@ app.use('/contact', contactRoutes);
 app.get('/', (_req, res) => {
   res.json({ message: 'AstroDiscover API 🚀 funcionando!' });
 });
+
+// server/app.ts (o donde montes tus rutas)
+app.get('/health', (_req, res) => {
+  res.json({ ok: true, ts: Date.now() }); // ← respuesta mínima
+});
+
 
 export default app;
