@@ -323,46 +323,31 @@
 //   });
 //   */
 // });
-
 import jwt from 'jsonwebtoken';
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { requireAuth, requireAdmin, type AuthTokenPayload } from '../middlewares/auth.js';
 
+// Helpers comunes para los tests
+const makeReq = (authHeader?: string, user?: Partial<AuthTokenPayload>) =>
+  ({ headers: authHeader ? { authorization: authHeader } : {}, user } as any);
+
+const makeRes = () => {
+  const res: any = {};
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+  res.send = jest.fn().mockReturnValue(res);
+  res.set = jest.fn().mockReturnValue(res);
+  return res;
+};
+
+// Secret para firmar tokens en estos tests
+const JWT_SECRET = process.env.JWT_SECRET || 'pon_un_secreto_fuerte';
+
 describe('Middlewares: auth', () => {
-  const makeRes = () => {
-    const res: any = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    return res;
-  };
-  return jwt.sign(payload, secret, { expiresIn: '1h' });
-};
-
-const initialAsteriumData: AsteriumAttrs = {
-  id: 100,
-  author_id: USER_ID,
-  title: 'Descubrimiento Inicial Publicado',
-  content_md: 'Contenido de la fila base.',
-  status: 'published',
-  published_at: new Date(),
-  like_count: 5,
-  excerpt: null,
-};
-
-describe('Controladores de Asterium (Base de Datos Real)', () => {
-  beforeAll(async () => {
-  process.env.JWT_SECRET = JWT_SECRET; // o el que uses
-  await sequelize.authenticate();
-  await sequelize.sync({ force: true });
-});
-
-  const makeReq = (authHeader?: string, user?: Partial<AuthTokenPayload>) =>
-    ({ headers: authHeader ? { authorization: authHeader } : {}, user } as any);
-
   const next = jest.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();      
+    jest.clearAllMocks();
     jest.resetAllMocks();
     next.mockReset();
   });
@@ -415,8 +400,8 @@ describe('Controladores de Asterium (Base de Datos Real)', () => {
         ['role inválido', { sub: '42', role: 'moderator' }],
       ];
 
-      it.each(cases)('%s', (_title, payload) => {
-        jest.spyOn(jwt, 'verify').mockReturnValue(payload as any);
+      it.each(cases)('%s', (_title, badPayload) => {
+        jest.spyOn(jwt, 'verify').mockReturnValue(badPayload as any);
 
         const req = makeReq('Bearer t');
         const res = makeRes();
@@ -446,34 +431,32 @@ describe('Controladores de Asterium (Base de Datos Real)', () => {
       expect(next).toHaveBeenCalledTimes(1);
       expect(req.user).toEqual(payload);
     });
-it('OK con token REAL firmado', () => {
 
-  if (jest.isMockFunction((jwt as any).verify)) {
-    (jwt as any).verify.mockRestore();
-  }
+    it('OK con token REAL firmado', () => {
+      // Asegura que usamos verify real (por si se mockeó arriba)
+      if (jest.isMockFunction((jwt as any).verify)) {
+        (jwt as any).verify.mockRestore();
+      }
 
+      process.env.JWT_SECRET = JWT_SECRET;
 
-  process.env.JWT_SECRET = 'pon_un_secreto_fuerte';
+      const token = jwt.sign(
+        { sub: '10', role: 'admin' } as any,
+        process.env.JWT_SECRET!,
+        { expiresIn: '7d' }
+      );
 
-  const token = jwt.sign(
-    { sub: '10', role: 'admin' } as any,
-    process.env.JWT_SECRET!,
-    { expiresIn: '7d' }
-  );
+      const req = makeReq(`Bearer ${token}`);
+      const res = makeRes();
+      const n = jest.fn();
 
-  const req = makeReq(`Bearer ${token}`);
-  const res = makeRes();
-  const n = jest.fn();
+      requireAuth(req, res, n);
 
-  // Ejecutamos el middleware real
-  requireAuth(req, res, n);
-
-  
-  expect(res.status).not.toHaveBeenCalled();
-  expect(n).toHaveBeenCalledTimes(1);
-  expect(req.user?.sub).toBe('10');
-  expect(req.user?.role).toBe('admin');
-});
+      expect(res.status).not.toHaveBeenCalled();
+      expect(n).toHaveBeenCalledTimes(1);
+      expect(req.user?.sub).toBe('10');
+      expect(req.user?.role).toBe('admin');
+    });
   });
 
   describe('requireAdmin', () => {

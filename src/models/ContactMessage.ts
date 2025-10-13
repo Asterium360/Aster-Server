@@ -9,22 +9,28 @@ export interface ContactMessageAttrs {
   email: string;
   subject?: string | null;
   message: string;
+  ip: string | null;
   user_id?: number | null;
   status: 'new' | 'read' | 'replied' | 'closed';
   created_at?: Date;
   updated_at?: Date;
 }
+
 type ContactMessageCreation = Optional<
   ContactMessageAttrs,
-  'id' | 'subject' | 'user_id' | 'status' |'created_at' | 'updated_at'
+  'id' | 'subject' | 'user_id' | 'status' | 'created_at' | 'updated_at' | 'ip'
 >;
 
-export class ContactMessage extends Model<ContactMessageAttrs, ContactMessageCreation> implements ContactMessageAttrs {
+export class ContactMessage
+  extends Model<ContactMessageAttrs, ContactMessageCreation>
+  implements ContactMessageAttrs
+{
   declare id: number;
   declare name: string;
   declare email: string;
   declare subject: string | null;
   declare message: string;
+  declare ip: string | null;
   declare user_id: number | null;
   declare status: 'new' | 'read' | 'replied' | 'closed';
   declare readonly created_at: Date;
@@ -34,6 +40,7 @@ export class ContactMessage extends Model<ContactMessageAttrs, ContactMessageCre
 ContactMessage.init(
   {
     id: { type: DataTypes.INTEGER.UNSIGNED, autoIncrement: true, primaryKey: true },
+    ip: { type: DataTypes.STRING(45), allowNull: true, defaultValue: null },
     name: { type: DataTypes.STRING(120), allowNull: false },
     email: { type: DataTypes.STRING(191), allowNull: false },
     subject: { type: DataTypes.STRING(200), allowNull: true, defaultValue: null },
