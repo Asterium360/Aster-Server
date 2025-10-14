@@ -1,12 +1,20 @@
 import { Asterium } from '../models/Asterium.js';
 
-export async function listPublished(_req: any, res: any) {
-  const rows = await Asterium.findAll({
-    where: { status: 'published' },
-    order: [['published_at', 'DESC']],
-    limit: 20,
-  });
-  res.json(rows);
+export async function listPublished(req: any, res: any) {
+  try {
+    const limitParam = Number(req.query.limit);
+    const limit = Number.isFinite(limitParam) ? Math.max(1, Math.min(limitParam, 50)) : 20;
+
+    const rows = await Asterium.findAll({
+      where: { status: 'published' },
+      order: [['published_at', 'DESC']],
+      limit,
+    });
+    res.json(rows);
+  } catch (err: any) {
+    console.error('Error en listPublished:', err);
+    res.status(500).json({ error: err.message || 'Error interno del servidor' });
+  }
 }
 
 export async function getDiscovery(req:any, res:any){
