@@ -65,7 +65,7 @@ export async function postContact(
             : undefined,
         });
 
-        const fromAddress = 'Asterium Soporte <pereiraanngy@gmail.com>'; // remitente verificado
+        const fromAddress = 'Asterium Soporte <equipoasterium@gmail.com>'; 
         await transport.sendMail({
           from: fromAddress,
           to: process.env.SUPPORT_EMAIL!,
