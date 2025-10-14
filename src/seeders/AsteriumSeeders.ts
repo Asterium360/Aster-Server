@@ -11,7 +11,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "excerpt": "Observaciones del JWST han mostrado estructuras en forma de cuentas oscuras sobre el polo norte de Saturno.",
       "content_md": "El Telescopio Espacial **James Webb (JWST)** captó pequeñas estructuras oscuras en la ionosfera de Saturno, junto a un patrón estelar asimétrico en la estratosfera.",
       "status": "published",
-      "image_url": "https://www.nasa.gov/sites/default/files/thumbnails/image/saturn_dark_beads.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760346793/404-bg_v4en4l.jpg"
     },
     {
       "id": 2,
@@ -21,7 +21,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "Análisis recientes de datos del JWST sobre objetos conocidos como *'little red dots'* sugieren la posibilidad de agujeros negros envueltos en gas denso.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://www.nasa.gov/sites/default/files/thumbnails/image/black_hole_star_candidate.png"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760347643/STScI-01GX6584JDCNAKDR7HSST2F5XX_wekfec.jpg"
     },
     {
       "id": 3,
@@ -31,7 +31,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "El número de exoplanetas confirmados registrados por el **NExScI de la NASA** ha sobrepasado la marca de 6.000.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://www.nasa.gov/sites/default/files/thumbnails/image/exoplanet_catalog.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760347781/5k-exo-beauty-lores-final_mdnodc.webp"
     },
     {
       "id": 4,
@@ -41,7 +41,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "Las observaciones con **NIRCam** y **MIRI** del JWST muestran regiones de formación estelar extremadamente activas.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://science.nasa.gov/system/news_items/main_images/10960_sagittarius_b2.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760348215/STScI-01K4T8XYNBJ9A93DJ9KYQJE2WF_w791dj.png"
     },
     {
       "id": 5,
@@ -51,7 +51,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "La ESA inicia **NELIOTA-III**, un proyecto para mejorar la detección de impactos en la Luna y crear una base de datos abierta.",
       "status": "published",
       "published_at": null,        
-      "image_url": "https://www.esa.int/var/esa/storage/images/2025/09/lunar_impact_observation.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760348358/s2-mareimbrium_1920x1080_xd1qpa.jpg"
     },
     {
       "id": 6,
@@ -61,7 +61,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "Recientes imágenes de la ESA muestran la atmósfera de Marte con capas finas y coloridas.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://www.esa.int/var/esa/storage/images/2025/09/mars_atmosphere_layers.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760350063/404_opfphh.jpg"
     },
     {
       "id": 7,
@@ -71,7 +71,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "Un nuevo estudio explora cómo un espejo rectangular podría mejorar la resolución angular necesaria para detectar planetas similares a la Tierra.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://www.space.com/images/rectangular_telescope.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760350327/space_telescope_illustration_zgsb89.jpg"
     },
     {
       "id": 8,
@@ -81,7 +81,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "Observaciones con el **Hubble** identificaron un remanente raro que sugiere la formación por fusión de enanas blancas.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://www.nasa.gov/sites/default/files/thumbnails/image/white_dwarf_merger.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760350447/STScI-01EVTB5B7AEQ4RYPV452FZEBMF_tz4df1.jpg"
     },
     {
       "id": 9,
@@ -91,7 +91,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "Imágenes de discos protoplanetarios revelan señales de un objeto con masa de varios Júpiter alrededor de una estrella joven.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://www.space.com/images/monster_exoplanet_disk.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760350612/ZGcbvhbCnht3jKqEFskS3k-650-80.png_q4ufc2.webp"
     },
     {
       "id": 10,
@@ -101,7 +101,7 @@ import type { AsteriumCreation } from "../models/Asterium.js"
       "content_md": "Observaciones con **NIRSpec** del JWST buscan trazas de gases atmosféricos en TRAPPIST-1e.",
       "status": "published",
       "published_at": null,
-      "image_url": "https://www.space.com/images/trappist_1e_atmosphere.jpg"
+      "image_url": "https://res.cloudinary.com/dm6gy5wsm/image/upload/v1760351161/PIA22093-NASA-1_pcsax9.jpg"
     }
   ]
 
