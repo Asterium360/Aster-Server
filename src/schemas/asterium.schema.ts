@@ -16,7 +16,8 @@ export const createDiscoverySchema = z.object({
   .string()
   .url("Debe ser una URL válida")
   .optional()
-  .or(z.literal("")),
+  .or(z.literal(""))
+  .or(z.undefined()),
 });
 
 // Para actualizar un descubrimiento → todo opcional
@@ -30,11 +31,12 @@ export const updateDiscoverySchema = z.object({
   image_url: z
     .string()
     .refine(
-      (val) => !val || /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(val),
-      "Debe ser una URL válida"
+      (val) => !val || val === "" || /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(val),
+      "Debe ser una URL válida si se proporciona"
     )
     .optional()
-    .or(z.literal("")),
+    .or(z.literal(""))
+    .or(z.undefined()),
 });
 // Validación de params
 export const idParamSchema = z.object({
