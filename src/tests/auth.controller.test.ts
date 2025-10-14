@@ -16,11 +16,22 @@ const makeRes = () => {
 };
 const makeReq = (body: any = {}, params: any = {}) => ({ body, params } as any);
 
+// Utilidad para setear temporalmente JWT_SECRET
+const withTempJwt = (value: string | undefined, run: () => Promise<void> | void) => {
+  const prev = process.env.JWT_SECRET;
+  if (value === undefined) delete (process.env as any).JWT_SECRET;
+  else process.env.JWT_SECRET = value;
+  return Promise.resolve(run()).finally(() => {
+    if (prev === undefined) delete (process.env as any).JWT_SECRET;
+    else process.env.JWT_SECRET = prev;
+  });
+};
+
 describe('auth.controller', () => {
   beforeAll(async () => {
     process.env.JWT_SECRET = 'pon_un_secreto_fuerte';
     await sequelize.authenticate();
-    await sequelize.sync({ });
+    await sequelize.sync({});
   });
 
   afterAll(async () => {
@@ -33,7 +44,7 @@ describe('auth.controller', () => {
     await User.destroy({ where: {} });
   });
 
-  // -------- REGISTER --------
+  // ================== REGISTER ==================
   describe('register', () => {
     it('201 crea usuario y devuelve token', async () => {
       jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashed-ok' as any);
@@ -80,9 +91,98 @@ describe('auth.controller', () => {
       expect(res.status).toHaveBeenCalledWith(409);
       expect(res.json).toHaveBeenCalledWith({ error: 'Email en uso' });
     });
+
+    it('409 si el username ya existe', async () => {
+      await User.create({
+        email: 'user2@example.com',
+        username: 'repeated',
+        password_hash: 'hash',
+        role_id: 2,
+      } as any);
+
+      const req = makeReq({
+        email: 'other@example.com',
+        username: 'repeated',
+        password: 'x',
+      });
+      const res = makeRes();
+
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(409);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Username en uso' });
+    });
+
+    it('400 si faltan campos', async () => {
+      const req = makeReq({ email: '', username: '', password: '' });
+      const res = makeRes();
+
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Faltan campos: email, username y password' });
+    });
+
+    it('500 si falta JWT_SECRET', async () =>
+      withTempJwt(undefined, async () => {
+        jest.spyOn(User, 'findOne').mockResolvedValueOnce(null as any).mockResolvedValueOnce(null as any);
+        jest.spyOn(bcrypt, 'hash').mockResolvedValue('hash' as any);
+
+        const req = makeReq({ email: 'secretless@example.com', username: 'secretless', password: 'x' });
+        const res = makeRes();
+
+        await register(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Falta JWT_SECRET' });
+      }));
+
+    it('409 si SequelizeUniqueConstraintError en create()', async () => {
+      jest.spyOn(User, 'findOne').mockResolvedValueOnce(null as any).mockResolvedValueOnce(null as any);
+      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hash' as any);
+      jest.spyOn(User, 'create').mockRejectedValue({ name: 'SequelizeUniqueConstraintError' });
+
+      const req = makeReq({ email: 'x@x.com', username: 'x', password: 'x' });
+      const res = makeRes();
+
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(409);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Email o username ya en uso' });
+    });
+
+    it('400 si SequelizeValidationError en create()', async () => {
+      jest.spyOn(User, 'findOne').mockResolvedValueOnce(null as any).mockResolvedValueOnce(null as any);
+      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hash' as any);
+      jest
+        .spyOn(User, 'create')
+        .mockRejectedValue({ name: 'SequelizeValidationError', errors: [{ message: 'bad' }] });
+
+      const req = makeReq({ email: 'bad@x.com', username: 'bad', password: 'x' });
+      const res = makeRes();
+
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ error: ['bad'] });
+    });
+
+    it('500 si ocurre un error no controlado en register', async () => {
+      jest.spyOn(User, 'findOne').mockResolvedValueOnce(null as any).mockResolvedValueOnce(null as any);
+      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hash' as any);
+      jest.spyOn(User, 'create').mockRejectedValue(new Error('boom'));
+
+      const req = makeReq({ email: 'z@z.com', username: 'z', password: 'pw' });
+      const res = makeRes();
+
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Error interno del servidor' });
+    });
   });
 
-  // -------- LOGIN --------
+  // ================== LOGIN ==================
   describe('login', () => {
     beforeEach(async () => {
       await User.create({
@@ -149,9 +249,63 @@ describe('auth.controller', () => {
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({ error: 'Credenciales inválidas' });
     });
+
+    it('400 si faltan campos', async () => {
+      const req = makeReq({}); // sin email ni password
+      const res = makeRes();
+
+      await login(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Faltan campos: email y password' });
+    });
+
+    it('500 si falta JWT_SECRET', async () =>
+      withTempJwt(undefined, async () => {
+        jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as any);
+        // Simula que existe el usuario
+        const scopeFind = jest.fn().mockResolvedValue({ id: 1, email: 'u@example.com', username: 'u', role_id: 2, password_hash: 'h' });
+        jest.spyOn(User, 'scope').mockReturnValue({ findOne: scopeFind } as any);
+
+        const req = makeReq({ email: 'u@example.com', password: 'ok' });
+        const res = makeRes();
+
+        await login(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Falta JWT_SECRET' });
+      }));
+
+    it('400 si SequelizeValidationError en login', async () => {
+      const scopeSpy = jest
+        .spyOn(User, 'scope')
+        .mockReturnValue({ findOne: jest.fn().mockRejectedValue({ name: 'SequelizeValidationError', errors: [{ message: 'bad' }] }) } as any);
+
+      const req = makeReq({ email: 'u@example.com', password: 'ok' });
+      const res = makeRes();
+
+      await login(req, res);
+
+      expect(scopeSpy).toHaveBeenCalledWith('withPassword');
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ error: ['bad'] });
+    });
+
+    it('500 si ocurre un error no controlado en login', async () => {
+      const findOne = jest.fn().mockRejectedValue(new Error('db down'));
+      jest.spyOn(User, 'scope').mockReturnValue({ findOne } as any);
+
+      const req = makeReq({ email: 'u@example.com', password: 'pw' });
+      const res = makeRes();
+
+      await login(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Error interno del servidor' });
+    });
   });
 
-  // -------- PROMOTE TO ADMIN --------
+  // ================== PROMOTE TO ADMIN ==================
   describe('promoteToAdmin', () => {
     it('200 y role_id = 1 si existe', async () => {
       const u = await User.create({
