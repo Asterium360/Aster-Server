@@ -1,210 +1,239 @@
-# 🌌 Asterium Server
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/Express.js-000000?style=flat&logo=express&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
-![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=flat&logo=sequelize&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
-![Zod](https://img.shields.io/badge/Zod-3B82F6?style=flat&logo=zod&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=jsonwebtokens&logoColor=white)
-![Postman](https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white)
+🌌 Asterium Server
 
+API REST creada con Node.js + Express + TypeScript + Sequelize + MySQL
+para gestionar descubrimientos astronómicos y usuarios con roles.
 
-API REST creada con **Node.js + Express + TypeScript + Sequelize** para gestionar descubrimientos astronómicos.  
-Permite el registro y autenticación de usuarios, asignación de roles y manejo completo de descubrimientos (crear, editar, eliminar y listar).
+Permite el registro y autenticación JWT, la creación, edición y eliminación de descubrimientos,
+y el almacenamiento de imágenes en Cloudinary.
 
----
+🚀 Descripción general
 
-## 🚀 Descripción general
+Asterium es una API modular, segura y escalable con arquitectura MVC.
+Cuenta con validaciones sólidas, autenticación por roles y control de permisos granular.
 
-Asterium es una API segura y escalable, desarrollada con enfoque **MVC**, que ofrece:
+Características principales:
 
-- 🔐 Autenticación JWT con control de acceso por **roles** (`admin` y `user`).
-- 🧩 Validación de datos con **Zod**.
-- 🧠 ORM **Sequelize** conectado a **MySQL**.
-- 🛡️ Middlewares para autenticación, validación y seguridad (CORS, Helmet, Morgan).
-- 🧱 Código modular y mantenible con **TypeScript**.
+🔐 Autenticación JWT (login, registro, roles y protección de rutas)
 
----
+🧠 Validaciones Zod para inputs seguros
 
-## 🧭 Roles y permisos
+🪐 Cloudinary para carga y almacenamiento de imágenes
 
-| Rol | Puede listar | Puede ver detalle | Puede crear | Puede editar | Puede eliminar |
-|-----|---------------|------------------|--------------|---------------|----------------|
-| 🧍‍♀️ Usuario | ✅ | ✅ | ❌ | ✅ (solo sus descubrimientos) | ❌ |
-| 🛡️ Admin | ✅ | ✅ | ✅ | ✅ | ✅ |
+💾 Sequelize + MySQL como ORM y base de datos
 
----
+🛡️ Middlewares personalizados: auth, roles y validaciones
 
-## 🧩 Tecnologías utilizadas
+🧩 TypeScript para tipado estático y mantenibilidad
 
-| Categoría | Tecnología |
-|------------|------------|
-| Lenguaje | TypeScript |
-| Framework | Express.js |
-| ORM | Sequelize |
-| Base de datos | MySQL |
-| Validación | Zod |
-| Seguridad | Helmet, CORS, JWT |
-| Testing (opcional) | Jest |
+🧪 Tests automáticos con Jest y Supertest
 
----
+🧭 Roles y permisos
+Rol	Puede listar	Puede ver detalle	Puede crear	Puede editar propio	Puede eliminar propio
+🧍‍♀️ Usuario (logueado)	✅	✅	✅	✅	✅
+🛡️ Admin	✅	✅	✅	✅ (todos)	✅ (todos)
 
-## 📁 Estructura del proyecto
+Solo los usuarios autenticados pueden crear, editar o eliminar descubrimientos.
 
+Los admins pueden hacerlo con cualquier descubrimiento.
+
+Los usuarios normales solo pueden gestionar los suyos.
+
+🧩 Tecnologías utilizadas
+Categoría	Tecnología
+Lenguaje	TypeScript
+Framework	Express.js
+ORM	Sequelize
+Base de datos	MySQL
+Validación	Zod
+Seguridad	Helmet, CORS, JWT
+Almacenamiento de imágenes	Cloudinary + Multer
+Testing	Jest, Supertest
+Documentación	Postman
+🗂️ Estructura del proyecto
 src/
-├── controllers/ # Controladores (lógica de negocio)
-│ ├── asterium.controller.ts
-│ └── auth.controller.ts
-│
-├── middlewares/ # Middlewares reutilizables
-│ ├── auth.ts
-│ └── validate.ts
-│
-├── models/ # Modelos de Sequelize
-│ ├── Asterium.ts
-│ └── User.ts
-│
-├── routes/ # Definición de endpoints
-│ ├── auth.routes.ts
-│ └── asterium.routes.ts
-│
-├── schemas/ # Validaciones Zod
-│ ├── auth.schema.ts
-│ └── asterium.schema.ts
-│
-├── tests/ # Pruebas automáticas (opcional)
-│ └── auth.test.ts
-│
-├── db.ts # Configuración de conexión a MySQL
-├── index.ts # Punto de entrada del servidor
-└── .env # Variables de entorno
+ ├── config/
+ │   └── cloudinary.ts          # Configuración de Cloudinary
+ ├── controllers/               # Controladores (lógica de negocio)
+ │   ├── asterium.controller.ts
+ │   ├── auth.controller.ts
+ │   └── user.controller.ts
+ ├── middlewares/               # Middlewares reutilizables
+ │   ├── auth.ts
+ │   ├── checkRole.ts
+ │   ├── validate.ts
+ │   └── uploadImage.ts
+ ├── models/                    # Modelos Sequelize
+ │   ├── Asterium.ts
+ │   ├── User.ts
+ │   ├── Role.ts
+ │   └── ContactMessage.ts
+ ├── routes/                    # Definición de endpoints
+ │   ├── auth.routes.ts
+ │   ├── asterium.routes.ts
+ │   └── user.routes.ts
+ ├── schemas/                   # Validaciones con Zod
+ │   ├── auth.schema.ts
+ │   └── asterium.schema.ts
+ ├── tests/                     # Pruebas automáticas
+ │   ├── auth.test.ts
+ │   └── asterium.test.ts
+ ├── seeders/                   # Datos iniciales
+ │   └── AsteriumSeeders.ts
+ ├── db.ts                      # Configuración Sequelize + MySQL
+ ├── app.ts                     # Configuración Express
+ ├── index.ts                   # Punto de entrada
+ └── .env                       # Variables de entorno
 
----
-
-## ⚙️ Instalación y ejecución local
-
-### 1️⃣ Clonar el repositorio
-```bash
+⚙️ Instalación y ejecución local
+1️⃣ Clonar el repositorio
 git clone https://github.com/Asterium360/Aster-Server.git
 cd Aster-Server
 
-### 2️⃣ Instalar dependencias
+2️⃣ Instalar dependencias
 npm install
 
-### 3️⃣ Configurar variables de entorno
-Crea un archivo .env en la raíz del proyecto y define tus credenciales:
+3️⃣ Configurar variables de entorno
 
+Crea un archivo .env en la raíz con:
+
+PORT=4000
+DB_HOST=127.0.0.1
+DB_PORT=3306
 DB_NAME=asterium
 DB_USER=root
 DB_PASSWORD=tu_contraseña
-DB_HOST=localhost
-DB_PORT=3306
 JWT_SECRET=tu_token_secreto
-PORT=4000
 
-### 4️⃣ Ejecutar el servidor
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=tu_nombre
+CLOUDINARY_API_KEY=tu_key
+CLOUDINARY_API_SECRET=tu_secret
+
+4️⃣ Ejecutar el servidor
+
 Modo desarrollo:
+
 npm run dev
 
+
 Modo producción:
+
 npm start
 
-Servidor corriendo en:
+
+Servidor activo en:
 👉 http://localhost:4000
 
-🔐 Endpoints principales
+☁️ Integración con Cloudinary
 
+El backend usa Multer + CloudinaryStorage para subir imágenes automáticamente.
+
+Las imágenes se almacenan en la carpeta:
+Asterium_Discoveries
+(Cloudinary la crea automáticamente si no existe)
+
+En el modelo Asterium, el campo image_url almacena el enlace público.
+
+🔹 Si el usuario pega un enlace externo, también se acepta (sin subir archivo).
+
+🔐 Endpoints principales
 🔸 Autenticación /auth
 Método	Endpoint	Descripción	Auth
 POST	/auth/register	Registrar nuevo usuario	❌
 POST	/auth/login	Iniciar sesión (devuelve token)	❌
 PUT	/auth/promote/:id	Promover usuario a admin	✅ solo admin
-
 🌠 Descubrimientos /asterium
-| Método     | Endpoint        | Descripción                                | Auth                      |
-| ---------- | --------------- | ------------------------------------------ | ------------------------- |
-| **GET**    | `/asterium`     | Lista todos los descubrimientos publicados | ✅ solo usuarios logueados |
-| **GET**    | `/asterium/:id` | Ver detalle de un descubrimiento           | ✅ solo usuarios logueados |
-| **POST**   | `/asterium`     | Crear nuevo descubrimiento                 | ✅ solo admin              |
-| **PUT**    | `/asterium/:id` | Editar un descubrimiento (autor o admin)   | ✅                         |
-| **DELETE** | `/asterium/:id` | Eliminar descubrimiento (autor o admin)    | ✅                         |
+Método	Endpoint	Descripción	Auth
+GET	/asterium	Lista todos los descubrimientos publicados	✅ logueados
+GET	/asterium/:id	Ver detalle de un descubrimiento	✅ logueados
+POST	/asterium	Crear nuevo descubrimiento	✅ user/admin
+PUT	/asterium/:id	Editar (autor o admin)	✅ user/admin
+DELETE	/asterium/:id	Eliminar (autor o admin)	✅ user/admin
+🧪 Testing
 
-🧪 Ejemplo de uso en Postman
-Registro de usuario
-POST → http://localhost:4000/auth/register
-{
-  "email": "usuario@mail.com",
-  "username": "astroUser",
-  "password": "12345678"
+Se realizaron pruebas con Jest + Supertest:
+
+Archivo	Descripción
+auth.test.ts	Verifica registro, login y JWT
+asterium.test.ts	CRUD completo de descubrimientos
+middlewares/auth.ts	Valida autenticación
+middlewares/checkRole.ts	Controla acceso por roles
+
+Ejecutar:
+
+npm test
+
+🧬 Modelo de base de datos (dbdiagram.io)
+Table users {
+  id int [pk, increment]
+  email varchar(191) [unique, not null]
+  username varchar(50) [unique, not null]
+  password_hash varchar(100) [not null]
+  role_id int
+  display_name varchar(100)
+  is_active boolean [default: true]
+  created_at datetime
+  updated_at datetime
 }
-Respuesta:
 
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1,
-    "email": "usuario@mail.com",
-    "username": "astroUser"
-  }
+Table roles {
+  id int [pk, increment]
+  name varchar(50) [unique, not null]
+}
+
+Table asteriums {
+  id int [pk, increment]
+  author_id int [not null]
+  title varchar(255) [not null]
+  excerpt text
+  content_md text [not null]
+  status varchar(20) [default: 'draft']
+  image_url varchar(500)
+  like_count int [default: 0]
+  published_at datetime
+  created_at datetime
+  updated_at datetime
+}
+
+Table contact_messages {
+  id int [pk, increment]
+  user_id int [not null]
+  name varchar(120) [not null]
+  email varchar(191) [not null]
+  subject varchar(200)
+  message text [not null]
+  status varchar(20) [default: 'new']
+  created_at datetime
+  updated_at datetime
+}
+
+Ref: users.role_id > roles.id
+Ref: asteriums.author_id > users.id
+Ref: contact_messages.user_id > users.id
 
 📘 Documentación Postman
 
-La colección completa de endpoints de Asterium API está disponible en Postman.
-Puedes consultarla, probar las peticiones y revisar las respuestas directamente desde el siguiente enlace:
+Colección oficial:
+👉 Ver colección en Postman
 
-🔗 [Ver colección en Postman](https://maryori-5224626.postman.co/workspace/Maryori%27s-Workspace~b4629cfb-3575-450f-84c7-237828081b35/collection/46421564-d0aae761-6651-474b-85ff-af970d5c081d?action=share&amp;creator=46421564)
+Incluye ejemplos de:
 
+Login, registro y promoción de roles
 
+CRUD completo de descubrimientos
 
-📄 Descripción general
+Subida de imágenes con Cloudinary
 
-Esta colección incluye todos los endpoints organizados por módulos, con ejemplos funcionales, tokens de prueba y respuestas esperadas.
-
-Módulo	Endpoint	Método	Descripción
-Usuarios (Auth)	/auth/register	POST	Registra un nuevo usuario.
-	/auth/login	POST	Inicia sesión y devuelve un token JWT.
-	/auth/promote/:id	PUT	Promueve un usuario normal a administrador.
-Descubrimientos (Asterium)	/asterium	GET	Lista todos los descubrimientos.
-	/asterium/:id	GET	Obtiene el detalle de un descubrimiento.
-	/asterium	POST	Crea un nuevo descubrimiento.
-	/asterium/:id	PUT	Actualiza un descubrimiento existente.
-	/asterium/:id	DELETE	Elimina un descubrimiento.
-
-🧠 Notas importantes:
-
-Las rutas protegidas requieren autenticación mediante token JWT.
-
-Authorization: Bearer <tu_token>
-
-
-Algunas acciones (como crear o eliminar descubrimientos) están reservadas solo para administradores.
-
-Todas las peticiones incluyen ejemplos de Body, Headers y respuestas esperadas.
-
-### 💾 Opción alternativa: importar la colección desde archivo JSON
-
-También puedes importar la colección manualmente si prefieres no usar el enlace público:
-
-1️⃣ Descarga el archivo [`Asterium_API.postman_collection.json`](Asterium API.postman_collection.json) incluido en este repositorio.  
-2️⃣ Abre Postman → pestaña **Collections**.  
-3️⃣ Clic en **Import** → selecciona el archivo JSON.  
-4️⃣ Verás todas las peticiones organizadas por módulos con sus descripciones y ejemplos.
-
-🧠 **Recomendado:** Si trabajas en equipo, esta opción asegura que todos tengan exactamente la misma versión documentada de la API.
-
+Autenticación JWT con variable global {{token}}
 
 👩‍💻 Equipo de desarrollo
 Rol	Integrante
 💻 Backend Developer	Maryori Cruz
 💻 Backend Developer	Anggy Pereira
-💻 Backend Developer	Sofia 
-
+💻 Backend Developer	Sofía
 🧠 Notas finales
 
-Este proyecto forma parte del bootcamp Factoría F5 - FullStack & DevOps.
+Proyecto desarrollado en Factoría F5 - Bootcamp FullStack & DevOps.
+La API aplica buenas prácticas de arquitectura limpia, seguridad y documentación profesional.
 
-La API se diseñó con fines educativos, aplicando buenas prácticas de arquitectura, seguridad y documentación.
-
-Próxima etapa: despliegue del backend en Render y conexión con el frontend de Asterium.
-
-🪐 "El universo es infinito y nuestra curiosidad también."
+🪐 "El universo es infinito… y nuestra curiosidad también."
