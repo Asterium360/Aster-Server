@@ -1,10 +1,8 @@
 import { Asterium } from '../models/Asterium.js';
 
 
-export async function listPublished(req: any, res: any) {
-
 // 🪐 Listar descubrimientos publicados
-export async function listPublished(_req: any, res: any) {
+export async function listPublished(req: any, res: any) {
 
   try {
     const limitParam = Number(req.query.limit);
@@ -22,15 +20,6 @@ export async function listPublished(_req: any, res: any) {
   }
 }
 
-
-export async function getDiscovery(req:any, res:any){
-  const {id} = req.params;
-  const row = await Asterium.findByPk(Number(id),{
-    include: [{association: "author", attributes:["id", "username", "email"]}]
-  });
-  if (!row) {
-    return res.status(404).json({error:"Descubrimiento no encontrado"});
-
 // 🌌 Obtener un descubrimiento por ID
 export async function getDiscovery(req: any, res: any) {
   try {
@@ -47,7 +36,6 @@ export async function getDiscovery(req: any, res: any) {
     res.status(500).json({ error: 'Error interno del servidor' });
 
   }
-  res.json(row);
 }
 
 // 🚀 Crear un nuevo descubrimiento
