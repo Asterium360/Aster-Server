@@ -9,10 +9,6 @@
     "lib": ["ES2022"],
 
     "types": ["node", "jest", "nodemailer", "supertest"],
-
-  
-
-
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
