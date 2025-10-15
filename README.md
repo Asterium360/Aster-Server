@@ -25,13 +25,14 @@ con una base sólida para integración con frontend (React, Vue o Next.js).
 
 ## 🧭 Roles y permisos
 
-| **Rol** | Listar | Ver detalle | Crear | Editar propio | Eliminar propio |
-|:--------|:-------:|:------------:|:------:|:---------------:|:----------------:|
-| 🧍‍♀️ **User** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 🛡️ **Admin** | ✅ | ✅ | ✅ | ✅ (todos) | ✅ (todos) |
+| **Rol** | Puede listar | Puede ver detalle | Puede crear | Puede editar | Puede eliminar |
+|:--------|:--------------:|:------------------:|:-------------:|:---------------:|:----------------:|
+| 🧍‍♀️ **Usuario** | ✅ | ✅ | ✅ | ✅ *(solo sus descubrimientos)* | ✅ *(solo sus descubrimientos)* |
+| 🛡️ **Admin** | ✅ | ✅ | ✅ | ✅ *(todos)* | ✅ *(todos)* |
 
-> 🔐 Solo los usuarios autenticados pueden crear, editar o eliminar.  
-> Los administradores tienen control total.
+> 🔐 Solo los **usuarios autenticados** pueden crear, editar o eliminar **sus propios descubrimientos**.  
+> Los administradores tienen **control total** sobre todos los registros.
+
 
 ---
 
