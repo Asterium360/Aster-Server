@@ -38,9 +38,9 @@ app.get('/', (_req, res) => {
   res.json({ message: 'AstroDiscover API 🚀 funcionando!' });
 });
 
-// server/app.ts (o donde montes tus rutas)
+
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, ts: Date.now() }); // ← respuesta mínima
+  res.json({ ok: true, ts: Date.now() });
 });
 
 
