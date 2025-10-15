@@ -9,17 +9,21 @@
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
 > **Asterium** es una API REST desarrollada con **Node.js, Express, TypeScript y Sequelize**,  
-> que permite gestionar *descubrimientos astronómicos* con roles, autenticación y subida de imágenes.
+> que permite gestionar *descubrimientos astronómicos* con autenticación, roles y carga de imágenes.
 
 ---
 
 ## 🚀 Descripción general
 
-Asterium es una API segura, modular y escalable con arquitectura **MVC**, validación de datos con **Zod**,  
-autenticación JWT y manejo de imágenes en **Cloudinary**.
+Asterium es una API moderna, escalable y documentada que permite:
 
-🧩 Diseñada para proyectos colaborativos y despliegues en la nube,  
-con una base sólida para integración con frontend (React, Vue o Next.js).
+- 🔐 **Registro y autenticación de usuarios** con roles (*admin* y *user*).  
+- 🧩 **CRUD completo** de descubrimientos astronómicos.  
+- ☁️ **Carga flexible de imágenes** (desde archivo o URL) con Cloudinary.  
+- 🧠 **Validación robusta** de datos con Zod.  
+- 🧱 **ORM Sequelize** conectado a MySQL.  
+- 🛡️ **Middlewares personalizados** para autenticación, validación y seguridad.  
+- 🧪 **Pruebas unitarias** con Jest y Supertest.  
 
 ---
 
@@ -33,21 +37,20 @@ con una base sólida para integración con frontend (React, Vue o Next.js).
 > 🔐 Solo los **usuarios autenticados** pueden crear, editar o eliminar **sus propios descubrimientos**.  
 > Los administradores tienen **control total** sobre todos los registros.
 
-
 ---
 
 ## ⚙️ Tecnologías utilizadas
 
-| Categoría | Tecnologías |
-|------------|--------------|
-| **Lenguaje** | TypeScript |
-| **Framework** | Express.js |
-| **ORM / DB** | Sequelize + MySQL |
-| **Validación** | Zod |
-| **Seguridad** | Helmet · CORS · JWT |
-| **Imágenes** | Cloudinary + Multer |
-| **Testing** | Jest · Supertest |
-| **Documentación** | Postman |
+| **Categoría** | **Tecnologías** |
+|---------------|-----------------|
+| 🧑‍💻 **Lenguaje** | TypeScript |
+| 🚀 **Framework** | Express.js |
+| 🧩 **ORM / DB** | Sequelize + MySQL |
+| 🧠 **Validación** | Zod |
+| 🛡️ **Seguridad** | Helmet · CORS · JWT |
+| ☁️ **Imágenes** | Cloudinary + Multer |
+| 🧪 **Testing** | Jest · Supertest |
+| 📘 **Documentación** | Postman |
 
 ---
 
@@ -55,34 +58,66 @@ con una base sólida para integración con frontend (React, Vue o Next.js).
 
 ```plaintext
 src/
- ├── config/               # Cloudinary setup
- ├── controllers/          # Lógica de negocio
+ ├── config/               # Configuración de Cloudinary
+ ├── controllers/          # Lógica de negocio (Asterium, Auth, Users)
  ├── middlewares/          # Auth, roles, validaciones
- ├── models/               # Sequelize models
- ├── routes/               # Endpoints principales
+ ├── models/               # Modelos Sequelize
+ ├── routes/               # Definición de endpoints
  ├── schemas/              # Validaciones Zod
  ├── seeders/              # Datos iniciales
- ├── tests/                # Pruebas automáticas
+ ├── tests/                # Pruebas unitarias
  ├── db.ts                 # Conexión MySQL
  ├── app.ts                # Configuración Express
  └── index.ts              # Punto de entrada
+⚙️ Instalación y ejecución local
+1️⃣ Clonar el repositorio
+bash
+Copiar código
+git clone https://github.com/Asterium360/Aster-Server.git
+cd Aster-Server
+2️⃣ Instalar dependencias
+bash
+Copiar código
+npm install
+3️⃣ Configurar variables de entorno
+Crea un archivo .env en la raíz del proyecto y define tus credenciales:
+
+env
+Copiar código
+DB_NAME=asterium
+DB_USER=root
+DB_PASSWORD=tu_contraseña
+DB_HOST=localhost
+DB_PORT=3306
+JWT_SECRET=tu_token_secreto
+PORT=4000
+4️⃣ Ejecutar el servidor
+Modo desarrollo:
+
+bash
+Copiar código
+npm run dev
+Servidor corriendo en:
+👉 http://localhost:4000
+
 ☁️ Cloudinary Integration
 🔸 Imágenes gestionadas con Multer + CloudinaryStorage
+
 🔸 Carpeta automática: Asterium_Discoveries
-🔸 Se aceptan tanto archivos como URLs externas
+
+🔸 Se aceptan tanto archivos locales como URLs externas
 
 ts
 Copiar código
 const image_url = req.file?.path || body.image_url || null;
-Si el usuario pega un link (por ejemplo, desde una web externa),
-la API también lo guarda sin subir archivo.
+Si el usuario pega un link desde una web externa, la API también lo guarda sin subir archivo.
 
 🔐 Endpoints principales
 🪐 Autenticación /auth
 Método	Endpoint	Descripción	Auth
 POST	/auth/register	Registrar usuario	❌
 POST	/auth/login	Iniciar sesión (JWT)	❌
-PUT	/auth/promote/:id	Promover a admin	✅ Solo admin
+PUT	/auth/promote/:id	Promover usuario a admin	✅ Solo admin
 
 🌠 Descubrimientos /asterium
 Método	Endpoint	Descripción	Auth
@@ -148,37 +183,50 @@ Archivo	Propósito
 auth.test.ts	Pruebas de registro, login y JWT
 asterium.test.ts	CRUD de descubrimientos
 auth.ts (middleware)	Verifica autenticación
-checkRole.ts	Control de permisos por rol
+checkRole.ts (middleware)	Control de permisos por rol
+
+Ejecutar pruebas:
 
 bash
 Copiar código
 npm test
 📘 Documentación Postman
-🪐 Colección completa →
-👉 Ver en Postman
+👉 [Ver colección en Postman](https://maryori-5224626.postman.co/workspace/Maryori%27s-Workspace~b4629cfb-3575-450f-84c7-237828081b35/collection/46421564-d0aae761-6651-474b-85ff-af970d5c081d?action=share&amp;creator=46421564)
 
-Incluye:
+Esta colección incluye todos los endpoints organizados por módulos, con ejemplos funcionales, tokens de prueba y respuestas esperadas.
 
-Ejemplos de login / registro / JWT
+Módulo	Endpoint	Método	Descripción
+Usuarios (Auth)	/auth/register	POST	Registra un nuevo usuario
+/auth/login	POST	Inicia sesión y devuelve un token JWT
+/auth/promote/:id	PUT	Promueve un usuario normal a admin
+Descubrimientos (Asterium)	/asterium	GET	Lista todos los descubrimientos
+/asterium/:id	GET	Obtiene el detalle de un descubrimiento
+/asterium	POST	Crea un nuevo descubrimiento
+/asterium/:id	PUT	Actualiza un descubrimiento existente
+/asterium/:id	DELETE	Elimina un descubrimiento
 
-CRUD de descubrimientos
+⚠️ Rutas protegidas requieren autenticación mediante token JWT:
+Authorization: Bearer <tu_token>
 
-Subida de imágenes
+💾 Importar la colección manualmente
+1️⃣ Descarga el archivo Asterium_API.postman_collection.json
+2️⃣ Abre Postman → pestaña Collections
+3️⃣ Clic en Import → selecciona el archivo JSON
+4️⃣ Verás todas las peticiones organizadas por módulos con ejemplos de uso
 
-Variables de entorno ({{token}})
+💡 Recomendado: ideal para equipos, asegura que todos trabajen con la misma versión documentada de la API.
 
 👩‍💻 Equipo de desarrollo
 Rol	Integrante
 💻 Backend Developer	Anggy Pereira
-💻 Backend Developer	Maryori Cruz
-💻 Backend Developer	Michelle Perez
-💻 Backend Developer	Sofía Reyes
 💻 Backend Developer	Larysa Ambartsumian
+💻 Backend Developer	Maryori Cruz
+💻 Backend Developer	Michelle Gelves
+💻 Backend Developer	Sofía Reyes
 
 🧠 Notas finales
 Proyecto realizado en Factoría F5 – Bootcamp FullStack & DevOps.
-Diseñado con buenas prácticas de arquitectura, seguridad y documentación profesional.
+Diseñado aplicando buenas prácticas de arquitectura, seguridad y documentación profesional.
 
-“El universo es infinito… y nuestra curiosidad también.”
-
-✨ By the Asterium Backend Team – 2025
+✨ “El universo es infinito y nuestra curiosidad también.”
+By the Asterium Backend Team – 2025
