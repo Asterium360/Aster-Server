@@ -1,169 +1,101 @@
-🌌 Asterium Server
+# 🌌 ASTERIUM SERVER
 
-API REST creada con Node.js + Express + TypeScript + Sequelize + MySQL
-para gestionar descubrimientos astronómicos y usuarios con roles.
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-00758F?style=for-the-badge&logo=mysql&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
-Permite el registro y autenticación JWT, la creación, edición y eliminación de descubrimientos,
-y el almacenamiento de imágenes en Cloudinary.
+> **Asterium** es una API REST desarrollada con **Node.js, Express, TypeScript y Sequelize**,  
+> que permite gestionar *descubrimientos astronómicos* con roles, autenticación y subida de imágenes.
 
-🚀 Descripción general
+---
 
-Asterium es una API modular, segura y escalable con arquitectura MVC.
-Cuenta con validaciones sólidas, autenticación por roles y control de permisos granular.
+## 🚀 Descripción general
 
-Características principales:
+Asterium es una API segura, modular y escalable con arquitectura **MVC**, validación de datos con **Zod**,  
+autenticación JWT y manejo de imágenes en **Cloudinary**.
 
-🔐 Autenticación JWT (login, registro, roles y protección de rutas)
+🧩 Diseñada para proyectos colaborativos y despliegues en la nube,  
+con una base sólida para integración con frontend (React, Vue o Next.js).
 
-🧠 Validaciones Zod para inputs seguros
+---
 
-🪐 Cloudinary para carga y almacenamiento de imágenes
+## 🧭 Roles y permisos
 
-💾 Sequelize + MySQL como ORM y base de datos
+| **Rol** | Listar | Ver detalle | Crear | Editar propio | Eliminar propio |
+|:--------|:-------:|:------------:|:------:|:---------------:|:----------------:|
+| 🧍‍♀️ **User** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 🛡️ **Admin** | ✅ | ✅ | ✅ | ✅ (todos) | ✅ (todos) |
 
-🛡️ Middlewares personalizados: auth, roles y validaciones
+> 🔐 Solo los usuarios autenticados pueden crear, editar o eliminar.  
+> Los administradores tienen control total.
 
-🧩 TypeScript para tipado estático y mantenibilidad
+---
 
-🧪 Tests automáticos con Jest y Supertest
+## ⚙️ Tecnologías utilizadas
 
-🧭 Roles y permisos
-Rol	Puede listar	Puede ver detalle	Puede crear	Puede editar propio	Puede eliminar propio
-🧍‍♀️ Usuario (logueado)	✅	✅	✅	✅	✅
-🛡️ Admin	✅	✅	✅	✅ (todos)	✅ (todos)
+| Categoría | Tecnologías |
+|------------|--------------|
+| **Lenguaje** | TypeScript |
+| **Framework** | Express.js |
+| **ORM / DB** | Sequelize + MySQL |
+| **Validación** | Zod |
+| **Seguridad** | Helmet · CORS · JWT |
+| **Imágenes** | Cloudinary + Multer |
+| **Testing** | Jest · Supertest |
+| **Documentación** | Postman |
 
-Solo los usuarios autenticados pueden crear, editar o eliminar descubrimientos.
+---
 
-Los admins pueden hacerlo con cualquier descubrimiento.
+## 🗂️ Estructura del proyecto
 
-Los usuarios normales solo pueden gestionar los suyos.
-
-🧩 Tecnologías utilizadas
-Categoría	Tecnología
-Lenguaje	TypeScript
-Framework	Express.js
-ORM	Sequelize
-Base de datos	MySQL
-Validación	Zod
-Seguridad	Helmet, CORS, JWT
-Almacenamiento de imágenes	Cloudinary + Multer
-Testing	Jest, Supertest
-Documentación	Postman
-🗂️ Estructura del proyecto
+```plaintext
 src/
- ├── config/
- │   └── cloudinary.ts          # Configuración de Cloudinary
- ├── controllers/               # Controladores (lógica de negocio)
- │   ├── asterium.controller.ts
- │   ├── auth.controller.ts
- │   └── user.controller.ts
- ├── middlewares/               # Middlewares reutilizables
- │   ├── auth.ts
- │   ├── checkRole.ts
- │   ├── validate.ts
- │   └── uploadImage.ts
- ├── models/                    # Modelos Sequelize
- │   ├── Asterium.ts
- │   ├── User.ts
- │   ├── Role.ts
- │   └── ContactMessage.ts
- ├── routes/                    # Definición de endpoints
- │   ├── auth.routes.ts
- │   ├── asterium.routes.ts
- │   └── user.routes.ts
- ├── schemas/                   # Validaciones con Zod
- │   ├── auth.schema.ts
- │   └── asterium.schema.ts
- ├── tests/                     # Pruebas automáticas
- │   ├── auth.test.ts
- │   └── asterium.test.ts
- ├── seeders/                   # Datos iniciales
- │   └── AsteriumSeeders.ts
- ├── db.ts                      # Configuración Sequelize + MySQL
- ├── app.ts                     # Configuración Express
- ├── index.ts                   # Punto de entrada
- └── .env                       # Variables de entorno
+ ├── config/               # Cloudinary setup
+ ├── controllers/          # Lógica de negocio
+ ├── middlewares/          # Auth, roles, validaciones
+ ├── models/               # Sequelize models
+ ├── routes/               # Endpoints principales
+ ├── schemas/              # Validaciones Zod
+ ├── seeders/              # Datos iniciales
+ ├── tests/                # Pruebas automáticas
+ ├── db.ts                 # Conexión MySQL
+ ├── app.ts                # Configuración Express
+ └── index.ts              # Punto de entrada
+☁️ Cloudinary Integration
+🔸 Imágenes gestionadas con Multer + CloudinaryStorage
+🔸 Carpeta automática: Asterium_Discoveries
+🔸 Se aceptan tanto archivos como URLs externas
 
-⚙️ Instalación y ejecución local
-1️⃣ Clonar el repositorio
-git clone https://github.com/Asterium360/Aster-Server.git
-cd Aster-Server
-
-2️⃣ Instalar dependencias
-npm install
-
-3️⃣ Configurar variables de entorno
-
-Crea un archivo .env en la raíz con:
-
-PORT=4000
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_NAME=asterium
-DB_USER=root
-DB_PASSWORD=tu_contraseña
-JWT_SECRET=tu_token_secreto
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=tu_nombre
-CLOUDINARY_API_KEY=tu_key
-CLOUDINARY_API_SECRET=tu_secret
-
-4️⃣ Ejecutar el servidor
-
-Modo desarrollo:
-
-npm run dev
-
-
-Modo producción:
-
-npm start
-
-
-Servidor activo en:
-👉 http://localhost:4000
-
-☁️ Integración con Cloudinary
-
-El backend usa Multer + CloudinaryStorage para subir imágenes automáticamente.
-
-Las imágenes se almacenan en la carpeta:
-Asterium_Discoveries
-(Cloudinary la crea automáticamente si no existe)
-
-En el modelo Asterium, el campo image_url almacena el enlace público.
-
-🔹 Si el usuario pega un enlace externo, también se acepta (sin subir archivo).
+ts
+Copiar código
+const image_url = req.file?.path || body.image_url || null;
+Si el usuario pega un link (por ejemplo, desde una web externa),
+la API también lo guarda sin subir archivo.
 
 🔐 Endpoints principales
-🔸 Autenticación /auth
+🪐 Autenticación /auth
 Método	Endpoint	Descripción	Auth
-POST	/auth/register	Registrar nuevo usuario	❌
-POST	/auth/login	Iniciar sesión (devuelve token)	❌
-PUT	/auth/promote/:id	Promover usuario a admin	✅ solo admin
+POST	/auth/register	Registrar usuario	❌
+POST	/auth/login	Iniciar sesión (JWT)	❌
+PUT	/auth/promote/:id	Promover a admin	✅ Solo admin
+
 🌠 Descubrimientos /asterium
 Método	Endpoint	Descripción	Auth
-GET	/asterium	Lista todos los descubrimientos publicados	✅ logueados
-GET	/asterium/:id	Ver detalle de un descubrimiento	✅ logueados
+GET	/asterium	Lista descubrimientos publicados	✅ Logueados
+GET	/asterium/:id	Ver detalle de un descubrimiento	✅ Logueados
 POST	/asterium	Crear nuevo descubrimiento	✅ user/admin
-PUT	/asterium/:id	Editar (autor o admin)	✅ user/admin
-DELETE	/asterium/:id	Eliminar (autor o admin)	✅ user/admin
-🧪 Testing
+PUT	/asterium/:id	Editar propio o admin	✅ user/admin
+DELETE	/asterium/:id	Eliminar propio o admin	✅ user/admin
 
-Se realizaron pruebas con Jest + Supertest:
+🧬 Modelo de base de datos
+Diagrama generado con dbdiagram.io
 
-Archivo	Descripción
-auth.test.ts	Verifica registro, login y JWT
-asterium.test.ts	CRUD completo de descubrimientos
-middlewares/auth.ts	Valida autenticación
-middlewares/checkRole.ts	Controla acceso por roles
-
-Ejecutar:
-
-npm test
-
-🧬 Modelo de base de datos (dbdiagram.io)
+sql
+Copiar código
 Table users {
   id int [pk, increment]
   email varchar(191) [unique, not null]
@@ -210,30 +142,42 @@ Table contact_messages {
 Ref: users.role_id > roles.id
 Ref: asteriums.author_id > users.id
 Ref: contact_messages.user_id > users.id
+🧪 Testing
+Archivo	Propósito
+auth.test.ts	Pruebas de registro, login y JWT
+asterium.test.ts	CRUD de descubrimientos
+auth.ts (middleware)	Verifica autenticación
+checkRole.ts	Control de permisos por rol
 
+bash
+Copiar código
+npm test
 📘 Documentación Postman
+🪐 Colección completa →
+👉 Ver en Postman
 
-Colección oficial:
-👉 Ver colección en Postman
+Incluye:
 
-Incluye ejemplos de:
+Ejemplos de login / registro / JWT
 
-Login, registro y promoción de roles
+CRUD de descubrimientos
 
-CRUD completo de descubrimientos
+Subida de imágenes
 
-Subida de imágenes con Cloudinary
-
-Autenticación JWT con variable global {{token}}
+Variables de entorno ({{token}})
 
 👩‍💻 Equipo de desarrollo
 Rol	Integrante
-💻 Backend Developer	Maryori Cruz
 💻 Backend Developer	Anggy Pereira
-💻 Backend Developer	Sofía
+💻 Backend Developer	Maryori Cruz
+💻 Backend Developer	Michelle Perez
+💻 Backend Developer	Sofía Reyes
+💻 Backend Developer	Larysa Ambartsumian
+
 🧠 Notas finales
+Proyecto realizado en Factoría F5 – Bootcamp FullStack & DevOps.
+Diseñado con buenas prácticas de arquitectura, seguridad y documentación profesional.
 
-Proyecto desarrollado en Factoría F5 - Bootcamp FullStack & DevOps.
-La API aplica buenas prácticas de arquitectura limpia, seguridad y documentación profesional.
+“El universo es infinito… y nuestra curiosidad también.”
 
-🪐 "El universo es infinito… y nuestra curiosidad también."
+✨ By the Asterium Backend Team – 2025
