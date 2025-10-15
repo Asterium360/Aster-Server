@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import type { Optional } from 'sequelize';
+import type { Optional, CreationOptional } from 'sequelize';
 import { sequelize } from '../db.js';
 import { url } from 'inspector';
 
@@ -15,12 +15,12 @@ export interface AsteriumAttrs {
   image_url?: string|null;
   created_at?: Date;
   updated_at?: Date;
-
+  deleted_at?: Date|null;
 }
 
 export type AsteriumCreation = Optional<
   AsteriumAttrs,
-  'id' | 'excerpt' | 'published_at' | 'like_count' | 'image_url' | 'created_at' | 'updated_at'
+  'id' | 'excerpt' | 'published_at' | 'like_count' | 'image_url' | 'created_at' | 'updated_at' | 'deleted_at'
 >;
 
 export class Asterium extends Model<AsteriumAttrs, AsteriumCreation> implements AsteriumAttrs {
@@ -33,8 +33,10 @@ export class Asterium extends Model<AsteriumAttrs, AsteriumCreation> implements 
   declare published_at: Date | null;
   declare like_count: number;
   declare image_url: string | null;
+
   declare readonly created_at: Date;
   declare readonly updated_at: Date;
+  declare readonly deleted_at:CreationOptional<Date | null>;
 }
 
 Asterium.init(
@@ -50,6 +52,7 @@ Asterium.init(
     image_url: { type: DataTypes.STRING, allowNull: true, defaultValue: null, validate: { isUrl: {msg: 'La imagen debe ser una url valida (http o https)'} } },
     created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     updated_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW }, 
+    deleted_at: { type: DataTypes.DATE, allowNull: true, defaultValue: null }
   },
   {
   sequelize,
@@ -57,5 +60,12 @@ Asterium.init(
   timestamps: true,
   createdAt: "created_at",
   updatedAt: "updated_at",
-}
+  deletedAt: "deleted_at",
+  paranoid: true, //habilita softdelete
+  scopes:{
+    withDeleted: {
+      paranoid: false, //deshabilita softdelete
+    }
+  }
+},
 );
