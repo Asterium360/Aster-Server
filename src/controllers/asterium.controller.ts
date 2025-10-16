@@ -1,4 +1,6 @@
 import { Asterium } from '../models/Asterium.js';
+import type { Request, Response } from 'express';
+import { Op } from "sequelize";
 
 // 🪐 Listar descubrimientos publicados
 export async function listPublished(req: any, res: any) {
@@ -45,7 +47,9 @@ export async function createDiscovery(req: any, res: any) {
       return res.status(401).json({ error: 'Usuario no autenticado' });
     }
 
-    const image_url = req.file?.path || body.image_url || null;
+    const image_url = req.file 
+      ? req.file.path 
+      : (body.image_url || null);
 
     const row = await Asterium.create({
       ...body,
@@ -53,6 +57,8 @@ export async function createDiscovery(req: any, res: any) {
       image_url,
       published_at: body.status === 'published' ? new Date() : null,
     });
+
+    console.log('req.file:', req.file);
 
     res.status(201).json({
       message: 'Descubrimiento creado correctamente 🚀',
@@ -82,10 +88,15 @@ export async function updateDiscovery(req: any, res: any) {
     if (req.body.content_md !== undefined) row.content_md = req.body.content_md;
     if (req.body.status !== undefined) row.status = req.body.status;
 
-    // 🖼️ Nuevo campo: imagen
-    if (req.body.image_url !== undefined) {
+    // 🔹 Manejo de la imagen
+    if (req.file) {
+      // Si subieron un archivo, reemplaza la imagen
+      row.image_url = req.file.path;
+    } else if (req.body.image_url !== undefined) {
+      // Si enviaron una URL (o vacío), actualiza
       row.image_url = req.body.image_url || null;
     }
+    // Si no hay cambios, mantiene la imagen existente
 
     // Si el estado pasa a "published", guarda la fecha de publicación
     if (req.body.status === 'published' && !row.published_at) {
@@ -118,3 +129,45 @@ export async function deleteDiscovery(req: any, res: any) {
     res.status(500).json({ error: err.message || 'Error interno del servidor' });
   }
 }
+
+//-------------------------- SCOPE DELETED BUTTERFLIES: solo para admins---------------------
+// Esta función usa el scope 'withDeleted' para obtener todos los registros (incluyendo los soft delete).
+export const getAllDiscoveriesForAdmin = async (req:Request, res:Response):Promise<void> => {
+  try {
+    const allDiscoveries = await Asterium.scope('withDeleted').findAll();
+    res.status(200).json(allDiscoveries);
+  } catch (error: any) {
+    console.error("Error getting records for admin:", error);
+    res.status(500).json({ error: "Error al obtener los registros para el administrador" });
+  }
+};
+
+// Obtener mariposa borrada por ID
+export const getDeletedDiscovery = async (req:Request, res:Response):Promise<void> => {
+  try {
+    const discovery = await Asterium.scope('withDeleted').findByPk(req.params.id);
+    res.status(200).json(discovery);
+  } catch (error: any) {
+    console.error("Error Sequelize en getById:", error);
+    res.status(500).json({ error: "Error al obtener mariposa" });
+  }
+}
+
+// Obtener solo mariposas eliminadas (soft deleted)
+export const getDeletedDiscoveries = async (req:Request, res:Response):Promise<void> => {
+  try {
+    const deleted = await Asterium.findAll({
+      paranoid: false,
+      where: {
+        deleted_at: {
+          [Op.ne]: null
+        }
+      }
+    });
+
+    res.json(deleted);
+  } catch (error: any) {
+    console.error("Error al obtener mariposas eliminadas:", error);
+    res.status(500).json({ error: "No se pudieron obtener las mariposas eliminadas"});
+  }
+};

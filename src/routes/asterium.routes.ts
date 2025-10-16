@@ -17,7 +17,7 @@ asteriumRouter.get("/:id", requireAuth, validate(idParamSchema, "params"), aster
 asteriumRouter.post(
   "/",
   requireAuth,
-  upload.single("image"), // 👈 este middleware procesa la imagen antes de pasar al controlador
+  upload.single("image"),
   validate(createDiscoverySchema),
   asteriumController.createDiscovery
 );
@@ -25,8 +25,9 @@ asteriumRouter.post(
 
 // Actualizar un descubrimiento
 asteriumRouter.put("/:id", requireAuth,
-  validate(idParamSchema, "params"),   // 👈 valida el parámetro de la URL
-  validate(updateDiscoverySchema, "body"), // 👈 valida el body
+  upload.single("image"),
+  validate(idParamSchema, "params"),  
+  validate(updateDiscoverySchema, "body"), 
   asteriumController.updateDiscovery
 );
 
