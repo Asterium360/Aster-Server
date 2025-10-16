@@ -84,6 +84,7 @@ src/
  ├─ db.ts                 # Conexión MySQL
  ├─ app.ts                # Configuración Express
  └─ index.ts              # Punto de entrada
+ 
 💻 Instalación y ejecución
 1️⃣ Clonar el repositorio
 
