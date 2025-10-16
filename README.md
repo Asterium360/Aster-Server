@@ -14,19 +14,23 @@
 ---
 
 ## 📚 Índice
-- [Descripción general](#descripción-general)
-- [Roles y permisos](#roles-y-permisos)
-- [Tecnologías utilizadas](#tecnologías-utilizadas)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Instalación y ejecución](#instalación-y-ejecución)
-- [Integración con Cloudinary](#integración-con-cloudinary)
-- [Endpoints principales](#endpoints-principales)
-- [Modelo de base de datos](#modelo-de-base-de-datos)
-- [Testing](#testing)
-- [Documentación Postman](#documentación-postman)
-- [Autenticación](#autenticación)
-- [Equipo de desarrollo](#equipo-de-desarrollo)
-- [Notas finales](#notas-finales)
+- [🌠 ASTERIUM SERVER](#-asterium-server)
+  - [📚 Índice](#-índice)
+  - [✨ Descripción general](#-descripción-general)
+  - [🪐 Roles y permisos](#-roles-y-permisos)
+  - [⚙️ Tecnologías utilizadas](#️-tecnologías-utilizadas)
+  - [🗂️ Estructura del proyecto](#️-estructura-del-proyecto)
+  - [💻 Instalación y ejecución](#-instalación-y-ejecución)
+  - [☁️ Integración con Cloudinary](#️-integración-con-cloudinary)
+  - [🚀 Endpoints principales](#-endpoints-principales)
+    - [🔑 Autenticación – `/auth`](#-autenticación--auth)
+    - [🌌 Descubrimientos – `/asterium`](#-descubrimientos--asterium)
+  - [🗄️ Modelo de base de datos](#️-modelo-de-base-de-datos)
+  - [🧪 Testing](#-testing)
+  - [📬 Documentación Postman](#-documentación-postman)
+  - [🔐 Autenticación](#-autenticación)
+  - [👩‍💻 Equipo de desarrollo](#-equipo-de-desarrollo)
+  - [📜 Notas finales](#-notas-finales)
 
 ---
 
@@ -84,25 +88,20 @@ src/
  ├─ db.ts                 # Conexión MySQL
  ├─ app.ts                # Configuración Express
  └─ index.ts              # Punto de entrada
- 
-💻 Instalación y ejecución
+ ```
+## 💻 Instalación y ejecución
 1️⃣ Clonar el repositorio
-
-bash
-Copiar código
+```bash
 git clone https://github.com/Asterium360/Aster-Server.git
 cd Aster-Server
+```
 2️⃣ Instalar dependencias
-
-bash
-Copiar código
+```bash
 npm install
+```
 3️⃣ Variables de entorno
-
 Crea un archivo .env en la raíz del proyecto con el siguiente contenido:
-
-bash
-Copiar código
+```bash
 DB_NAME=asterium
 DB_USER=root
 DB_PASSWORD=tu_contraseña
@@ -110,46 +109,52 @@ DB_HOST=localhost
 DB_PORT=3306
 JWT_SECRET=tu_token_secreto
 PORT=4000
+```
 4️⃣ Ejecutar el servidor
-
-bash
-Copiar código
+```bash
 npm run dev
+```
 Servidor disponible en 👉 http://localhost:4000
 
-☁️ Integración con Cloudinary
+## ☁️ Integración con Cloudinary
 Multer + CloudinaryStorage
 
 📁 Carpeta automática: Asterium_Discoveries
 
 🌐 Se aceptan archivos locales y URLs externas:
 
-ts
-Copiar código
+```ts
 const image_url = req.file?.path || body.image_url || null;
+```
 Si el usuario pega un link desde una web externa, la API también lo guarda sin subir archivo.
 
-🚀 Endpoints principales
-🔑 Autenticación – /auth
-Método	Endpoint	Descripción	Auth
-POST	/auth/register	Registrar usuario	❌
-POST	/auth/login	Iniciar sesión (JWT)	❌
-PUT	/auth/promote/:id	Promover usuario a admin	✅ Solo admin
 
-🌌 Descubrimientos – /asterium
-Método	Endpoint	Descripción	Auth
-GET	/asterium	Lista de descubrimientos	✅ Logueados
-GET	/asterium/:id	Ver detalle	✅ Logueados
-POST	/asterium	Crear nuevo descubrimiento	✅ user/admin
-PUT	/asterium/:id	Editar (propio) o admin	✅ user/admin
-DELETE	/asterium/:id	Eliminar (propio) o admin	✅ user/admin
+## 🚀 Endpoints principales
 
-🗄️ Modelo de base de datos
+### 🔑 Autenticación – `/auth`
+
+| Método | Endpoint | Descripción | Auth |
+|---------|-----------|--------------|------|
+| POST | /auth/register | Registrar usuario | ❌ |
+| POST | /auth/login | Iniciar sesión (JWT) | ❌ |
+| PUT | /auth/promote/:id | Promover usuario a admin | ✅ Solo admin |
+
+### 🌌 Descubrimientos – `/asterium`
+
+| Método | Endpoint | Descripción | Auth |
+|---------|-----------|--------------|------|
+| GET | /asterium | Lista de descubrimientos | ✅ Logueados |
+| GET | /asterium/:id | Ver detalle | ✅ Logueados |
+| POST | /asterium | Crear nuevo descubrimiento | ✅ user/admin |
+| PUT | /asterium/:id | Editar (propio) o admin | ✅ user/admin |
+| DELETE | /asterium/:id | Eliminar (propio) o admin | ✅ user/admin |
+
+
+## 🗄️ Modelo de base de datos
 📊 Diagrama en dbdiagram.io
-📁 Ver colección en db.io
+[📁 Ver colección en db.io](https://dbdiagram.io/d/Asterium-Diagram-68e794d8d2b621e4220a55d0)
 
-sql
-Copiar código
+```sql
 Table users {
   id int [pk, increment]
   email varchar(191) [unique, not null]
@@ -196,7 +201,9 @@ Table contact_messages {
 Ref: users.role_id > roles.id
 Ref: asteriums.author_id > users.id
 Ref: contact_messages.user_id > users.id
-🧪 Testing
+```
+
+## 🧪 Testing
 Archivo	Propósito
 auth.test.ts	Registro, login y JWT
 asterium.test.ts	CRUD de descubrimientos
@@ -204,34 +211,35 @@ auth.ts	Middleware de autenticación
 checkRole.ts	Middleware de control de roles
 
 Ejecutar pruebas:
-
-bash
-Copiar código
+```bash
 npm run test
-📬 Documentación Postman
-📎 Ver colección en Postman
+```
+## 📬 Documentación Postman
+[📎 Ver colección en Postman](https://documenter.getpostman.com/view/46421564/2sB3QNqU8X)
 
 Esta colección incluye todos los endpoints organizados por módulos, con ejemplos funcionales, tokens de prueba y respuestas esperadas.
 
-Módulo	Endpoint	Método	Descripción
-Usuarios (Auth)	/auth/register	POST	Registra un nuevo usuario
-/auth/login	POST	Inicia sesión y devuelve un token JWT
-/auth/promote/:id	PUT	Promueve un usuario normal a admin
-Descubrimientos (Asterium)	/asterium	GET	Lista todos los descubrimientos
-/asterium/:id	GET	Obtiene el detalle de un descubrimiento
-/asterium	POST	Crea un nuevo descubrimiento
-/asterium/:id	PUT	Actualiza un descubrimiento existente
-/asterium/:id	DELETE	Elimina un descubrimiento
+| 📦 Módulo                      | 🌐 Endpoint       | ⚙️ Método | 📝 Descripción                          |
+| ------------------------------ | ----------------- | --------- | --------------------------------------- |
+| **Usuarios (Auth)**            | /auth/register    | POST      | Registra un nuevo usuario               |
+| **Usuarios (Auth)**            | /auth/login       | POST      | Inicia sesión y devuelve un token JWT   |
+| **Usuarios (Auth)**            | /auth/promote/:id | PUT       | Promueve un usuario normal a admin      |
+| **Descubrimientos (Asterium)** | /asterium         | GET       | Lista todos los descubrimientos         |
+| **Descubrimientos (Asterium)** | /asterium/:id     | GET       | Obtiene el detalle de un descubrimiento |
+| **Descubrimientos (Asterium)** | /asterium         | POST      | Crea un nuevo descubrimiento            |
+| **Descubrimientos (Asterium)** | /asterium/:id     | PUT       | Actualiza un descubrimiento existente   |
+| **Descubrimientos (Asterium)** | /asterium/:id     | DELETE    | Elimina un descubrimiento               |
 
-🔐 Autenticación
+## 🔐 Autenticación
 Las rutas protegidas requieren autenticación mediante token JWT:
 
-makefile
-Copiar código
+```bash
 Authorization: Bearer <tu_token>
+```
 Importar la colección manualmente:
 
-Descarga el archivo Asterium_API.postman_collection.json
+Descarga el archivo [Asterium_API.postman_collection.json](https://github.com/Asterium360/Aster-Server/blob/feature-routes/Asterium%20API.postman_collection.json)
+
 
 Abre Postman → pestaña Collections
 
@@ -240,13 +248,15 @@ Clic en Import → selecciona el archivo JSON
 Verás todas las peticiones organizadas por módulos con ejemplos de uso.
 Ideal para equipos: asegura que todos trabajen con la misma versión documentada de la API.
 
-👩‍💻 Equipo de desarrollo
-Rol	Integrante
-🧭 Scrum Master	Anggy Pereira
-🚀 Backend Developer	Maryori Cruz
-🚀 Backend Developer	Sofía Reyes
+## 👩‍💻 Equipo de desarrollo
 
-📜 Notas finales
+| Rol | Integrante |
+|------|-------------|
+| 🧭 Scrum Master | Anggy Pereira |
+| 🚀 Backend Developer | Maryori Cruz |
+| 🚀 Backend Developer | Sofía Reyes |
+
+## 📜 Notas finales
 Proyecto desarrollado en Factoría F5 – Bootcamp FullStack & DevOps (2025)
 Diseñado aplicando buenas prácticas de arquitectura, seguridad y documentación profesional.
 
