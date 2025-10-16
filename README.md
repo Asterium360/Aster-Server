@@ -1,4 +1,4 @@
-# 🌌 ASTERIUM SERVER
+# 🌠 ASTERIUM SERVER
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
@@ -9,80 +9,98 @@
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
 > **Asterium** es una API REST desarrollada con **Node.js, Express, TypeScript y Sequelize**,  
-> que permite gestionar *descubrimientos astronómicos* con autenticación, roles y carga de imágenes.
+> diseñada para gestionar descubrimientos astronómicos con autenticación, roles y carga de imágenes.
 
 ---
 
-## 🚀 Descripción general
-
-Asterium es una API moderna, escalable y documentada que permite:
-
-- 🔐 **Registro y autenticación de usuarios** con roles (*admin* y *user*).  
-- 🧩 **CRUD completo** de descubrimientos astronómicos.  
-- ☁️ **Carga flexible de imágenes** (desde archivo o URL) con Cloudinary.  
-- 🧠 **Validación robusta** de datos con Zod.  
-- 🧱 **ORM Sequelize** conectado a MySQL.  
-- 🛡️ **Middlewares personalizados** para autenticación, validación y seguridad.  
-- 🧪 **Pruebas unitarias** con Jest y Supertest.  
+## 📚 Índice
+- [Descripción general](#descripción-general)
+- [Roles y permisos](#roles-y-permisos)
+- [Tecnologías utilizadas](#tecnologías-utilizadas)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Instalación y ejecución](#instalación-y-ejecución)
+- [Integración con Cloudinary](#integración-con-cloudinary)
+- [Endpoints principales](#endpoints-principales)
+- [Modelo de base de datos](#modelo-de-base-de-datos)
+- [Testing](#testing)
+- [Documentación Postman](#documentación-postman)
+- [Autenticación](#autenticación)
+- [Equipo de desarrollo](#equipo-de-desarrollo)
+- [Notas finales](#notas-finales)
 
 ---
 
-## 🧭 Roles y permisos
+## ✨ Descripción general
 
-| **Rol** | Puede listar | Puede ver detalle | Puede crear | Puede editar | Puede eliminar |
-|:--------|:--------------:|:------------------:|:-------------:|:---------------:|:----------------:|
-| 🧍‍♀️ **Usuario** | ✅ | ✅ | ✅ | ✅ *(solo sus descubrimientos)* | ✅ *(solo sus descubrimientos)* |
-| 🛡️ **Admin** | ✅ | ✅ | ✅ | ✅ *(todos)* | ✅ *(todos)* |
+- Usuarios con roles (**admin** y **user**).  
+- CRUD completo de descubrimientos astronómicos.  
+- Carga flexible de imágenes por archivo o URL (Cloudinary).  
+- Validación de datos con Zod.  
+- ORM Sequelize + MySQL.  
+- Middlewares personalizados para autenticación, validación y seguridad.  
+- Pruebas con Jest y Supertest.
 
-> 🔐 Solo los **usuarios autenticados** pueden crear, editar o eliminar **sus propios descubrimientos**.  
-> Los administradores tienen **control total** sobre todos los registros.
+---
+
+## 🪐 Roles y permisos
+
+| Rol | Listar | Ver detalle | Crear | Editar | Eliminar |
+|------|:------:|:------------:|:------:|:--------:|:---------:|
+| Usuario | ✅ | ✅ | ✅ | ✅ (solo propios) | ✅ (solo propios) |
+| Admin | ✅ | ✅ | ✅ | ✅ (todos) | ✅ (todos) |
+
+> Solo los usuarios autenticados pueden crear, editar o eliminar sus propios descubrimientos.  
+> Los administradores tienen control total sobre todos los registros.
 
 ---
 
 ## ⚙️ Tecnologías utilizadas
 
-| **Categoría** | **Tecnologías** |
-|---------------|-----------------|
-| 🧑‍💻 **Lenguaje** | TypeScript |
-| 🚀 **Framework** | Express.js |
-| 🧩 **ORM / DB** | Sequelize + MySQL |
-| 🧠 **Validación** | Zod |
-| 🛡️ **Seguridad** | Helmet · CORS · JWT |
-| ☁️ **Imágenes** | Cloudinary + Multer |
-| 🧪 **Testing** | Jest · Supertest |
-| 📘 **Documentación** | Postman |
+| Categoría | Tecnologías |
+|------------|-------------|
+| Lenguaje | TypeScript |
+| Framework | Express.js |
+| ORM / DB | Sequelize + MySQL |
+| Validación | Zod |
+| Seguridad | Helmet · CORS · JWT |
+| Imágenes | Cloudinary + Multer |
+| Testing | Jest · Supertest |
+| Documentación | Postman |
 
 ---
 
 ## 🗂️ Estructura del proyecto
 
-```plaintext
+```txt
 src/
- ├── config/               # Configuración de Cloudinary
- ├── controllers/          # Lógica de negocio (Asterium, Auth, Users)
- ├── middlewares/          # Auth, roles, validaciones
- ├── models/               # Modelos Sequelize
- ├── routes/               # Definición de endpoints
- ├── schemas/              # Validaciones Zod
- ├── seeders/              # Datos iniciales
- ├── tests/                # Pruebas unitarias
- ├── db.ts                 # Conexión MySQL
- ├── app.ts                # Configuración Express
- └── index.ts              # Punto de entrada
-⚙️ Instalación y ejecución local
+ ├─ config/               # Configuración (p.ej. Cloudinary)
+ ├─ controllers/          # Lógica de negocio (Asterium, Auth, Users)
+ ├─ middlewares/          # Auth, roles, validaciones
+ ├─ models/               # Modelos Sequelize
+ ├─ routes/               # Endpoints
+ ├─ schemas/              # Validaciones Zod
+ ├─ seeders/              # Datos iniciales
+ ├─ tests/                # Pruebas unitarias
+ ├─ db.ts                 # Conexión MySQL
+ ├─ app.ts                # Configuración Express
+ └─ index.ts              # Punto de entrada
+💻 Instalación y ejecución
 1️⃣ Clonar el repositorio
+
 bash
 Copiar código
 git clone https://github.com/Asterium360/Aster-Server.git
 cd Aster-Server
 2️⃣ Instalar dependencias
+
 bash
 Copiar código
 npm install
-3️⃣ Configurar variables de entorno
-Crea un archivo .env en la raíz del proyecto y define tus credenciales:
+3️⃣ Variables de entorno
 
-env
+Crea un archivo .env en la raíz del proyecto con el siguiente contenido:
+
+bash
 Copiar código
 DB_NAME=asterium
 DB_USER=root
@@ -92,43 +110,42 @@ DB_PORT=3306
 JWT_SECRET=tu_token_secreto
 PORT=4000
 4️⃣ Ejecutar el servidor
-Modo desarrollo:
 
 bash
 Copiar código
 npm run dev
-Servidor corriendo en:
-👉 http://localhost:4000
+Servidor disponible en 👉 http://localhost:4000
 
-☁️ Cloudinary Integration
-🔸 Imágenes gestionadas con Multer + CloudinaryStorage
+☁️ Integración con Cloudinary
+Multer + CloudinaryStorage
 
-🔸 Carpeta automática: Asterium_Discoveries
+📁 Carpeta automática: Asterium_Discoveries
 
-🔸 Se aceptan tanto archivos locales como URLs externas
+🌐 Se aceptan archivos locales y URLs externas:
 
 ts
 Copiar código
 const image_url = req.file?.path || body.image_url || null;
 Si el usuario pega un link desde una web externa, la API también lo guarda sin subir archivo.
 
-🔐 Endpoints principales
-🪐 Autenticación /auth
+🚀 Endpoints principales
+🔑 Autenticación – /auth
 Método	Endpoint	Descripción	Auth
 POST	/auth/register	Registrar usuario	❌
 POST	/auth/login	Iniciar sesión (JWT)	❌
 PUT	/auth/promote/:id	Promover usuario a admin	✅ Solo admin
 
-🌠 Descubrimientos /asterium
+🌌 Descubrimientos – /asterium
 Método	Endpoint	Descripción	Auth
-GET	/asterium	Lista descubrimientos publicados	✅ Logueados
-GET	/asterium/:id	Ver detalle de un descubrimiento	✅ Logueados
+GET	/asterium	Lista de descubrimientos	✅ Logueados
+GET	/asterium/:id	Ver detalle	✅ Logueados
 POST	/asterium	Crear nuevo descubrimiento	✅ user/admin
-PUT	/asterium/:id	Editar propio o admin	✅ user/admin
-DELETE	/asterium/:id	Eliminar propio o admin	✅ user/admin
+PUT	/asterium/:id	Editar (propio) o admin	✅ user/admin
+DELETE	/asterium/:id	Eliminar (propio) o admin	✅ user/admin
 
-🧬 Modelo de base de datos
-Diagrama generado con dbdiagram.io
+🗄️ Modelo de base de datos
+📊 Diagrama en dbdiagram.io
+📁 Ver colección en db.io
 
 sql
 Copiar código
@@ -180,18 +197,18 @@ Ref: asteriums.author_id > users.id
 Ref: contact_messages.user_id > users.id
 🧪 Testing
 Archivo	Propósito
-auth.test.ts	Pruebas de registro, login y JWT
+auth.test.ts	Registro, login y JWT
 asterium.test.ts	CRUD de descubrimientos
-auth.ts (middleware)	Verifica autenticación
-checkRole.ts (middleware)	Control de permisos por rol
+auth.ts	Middleware de autenticación
+checkRole.ts	Middleware de control de roles
 
 Ejecutar pruebas:
 
 bash
 Copiar código
-npm test
-📘 Documentación Postman
-👉 [Ver colección en Postman](https://maryori-5224626.postman.co/workspace/Maryori%27s-Workspace~b4629cfb-3575-450f-84c7-237828081b35/collection/46421564-d0aae761-6651-474b-85ff-af970d5c081d?action=share&amp;creator=46421564)
+npm run test
+📬 Documentación Postman
+📎 Ver colección en Postman
 
 Esta colección incluye todos los endpoints organizados por módulos, con ejemplos funcionales, tokens de prueba y respuestas esperadas.
 
@@ -205,28 +222,32 @@ Descubrimientos (Asterium)	/asterium	GET	Lista todos los descubrimientos
 /asterium/:id	PUT	Actualiza un descubrimiento existente
 /asterium/:id	DELETE	Elimina un descubrimiento
 
-⚠️ Rutas protegidas requieren autenticación mediante token JWT:
+🔐 Autenticación
+Las rutas protegidas requieren autenticación mediante token JWT:
+
+makefile
+Copiar código
 Authorization: Bearer <tu_token>
+Importar la colección manualmente:
 
-💾 Importar la colección manualmente
-1️⃣ Descarga el archivo Asterium_API.postman_collection.json
-2️⃣ Abre Postman → pestaña Collections
-3️⃣ Clic en Import → selecciona el archivo JSON
-4️⃣ Verás todas las peticiones organizadas por módulos con ejemplos de uso
+Descarga el archivo Asterium_API.postman_collection.json
 
-💡 Recomendado: ideal para equipos, asegura que todos trabajen con la misma versión documentada de la API.
+Abre Postman → pestaña Collections
+
+Clic en Import → selecciona el archivo JSON
+
+Verás todas las peticiones organizadas por módulos con ejemplos de uso.
+Ideal para equipos: asegura que todos trabajen con la misma versión documentada de la API.
 
 👩‍💻 Equipo de desarrollo
 Rol	Integrante
-💻 Backend Developer	Anggy Pereira
-💻 Backend Developer	Larysa Ambartsumian
-💻 Backend Developer	Maryori Cruz
-💻 Backend Developer	Michelle Gelves
-💻 Backend Developer	Sofía Reyes
+🧭 Scrum Master	Anggy Pereira
+🪄 Backend Developer	Maryori Cruz
+🚀 Backend Developer	Sofía Reyes
 
-🧠 Notas finales
-Proyecto realizado en Factoría F5 – Bootcamp FullStack & DevOps.
+📜 Notas finales
+Proyecto desarrollado en Factoría F5 – Bootcamp FullStack & DevOps (2025)
 Diseñado aplicando buenas prácticas de arquitectura, seguridad y documentación profesional.
 
-✨ “El universo es infinito y nuestra curiosidad también.”
-By the Asterium Backend Team – 2025
+✨ "El universo es infinito y nuestra curiosidad también."
+Asterium Backend Team – 2025
