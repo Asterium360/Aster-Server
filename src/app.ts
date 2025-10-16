@@ -12,6 +12,7 @@ import { ContactMessage } from './models/ContactMessage.js';
 import authRoutes from './routes/auth.routes.js';
 import asteriumRoutes from './routes/asterium.routes.js';
 import contactRoutes from './routes/contact.routes.js';
+import r from './routes/user.routes.js';
 
 // Asociaciones
 User.hasMany(Asterium, { foreignKey: 'author_id', as: 'discoveries' });
@@ -33,6 +34,7 @@ app.use(morgan('dev'));
 app.use('/auth', authRoutes);
 app.use('/asterium', asteriumRoutes);
 app.use('/contact', contactRoutes);
+app.use('/users', r);
 
 app.get('/', (_req, res) => {
   res.json({ message: 'AstroDiscover API 🚀 funcionando!' });

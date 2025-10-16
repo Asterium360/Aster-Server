@@ -5,10 +5,15 @@ import { checkRole } from '../middlewares/checkRole.js';
 import { validate } from '../middlewares/validate.js';
 import { z } from 'zod';
 import {
-  listUsers, getUser, createUser, updateUser, deleteUser, setUserRole, toggleActive
+  listUsers, getUser, createUser, updateUser, deleteUser, setUserRole, toggleActive, getUserProfile, getUserAvatar
 } from '../controllers/user.controller.js';
 
 const r = Router();
+// Perfil público + posts (usa query includePosts, page, limit, status)
+r.get('/:id/profile', getUserProfile);
+
+// Avatar público (redirige a avatar_url si existe o devuelve SVG fallback)
+r.get('/:id/avatar', getUserAvatar);
 
 // ejemplo: solo los ADMIN pueden listar, crear, editar, eliminar usuarios
 r.get('/', authRequired, checkRole(['admin']), listUsers);
