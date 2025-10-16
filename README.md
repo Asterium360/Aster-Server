@@ -29,7 +29,7 @@
   - [🧪 Testing](#-testing)
   - [📬 Documentación Postman](#-documentación-postman)
   - [🔐 Autenticación](#-autenticación)
-  - [👩‍💻 Equipo de desarrollo](#-equipo-de-desarrollo)
+  - [👩💻 Equipo de desarrollo](#-equipo-de-desarrollo)
   - [📜 Notas finales](#-notas-finales)
 
 ---
@@ -128,7 +128,6 @@ const image_url = req.file?.path || body.image_url || null;
 ```
 Si el usuario pega un link desde una web externa, la API también lo guarda sin subir archivo.
 
-
 ## 🚀 Endpoints principales
 
 ### 🔑 Autenticación – `/auth`
@@ -148,7 +147,6 @@ Si el usuario pega un link desde una web externa, la API también lo guarda sin 
 | POST | /asterium | Crear nuevo descubrimiento | ✅ user/admin |
 | PUT | /asterium/:id | Editar (propio) o admin | ✅ user/admin |
 | DELETE | /asterium/:id | Eliminar (propio) o admin | ✅ user/admin |
-
 
 ## 🗄️ Modelo de base de datos
 📊 Diagrama en dbdiagram.io
@@ -204,11 +202,11 @@ Ref: contact_messages.user_id > users.id
 ```
 
 ## 🧪 Testing
-Archivo	Propósito
-auth.test.ts	Registro, login y JWT
-asterium.test.ts	CRUD de descubrimientos
-auth.ts	Middleware de autenticación
-checkRole.ts	Middleware de control de roles
+Archivo Propósito
+auth.test.ts  Registro, login y JWT
+asterium.test.ts  CRUD de descubrimientos
+auth.ts Middleware de autenticación
+checkRole.ts  Middleware de control de roles
 
 Ejecutar pruebas:
 ```bash
@@ -240,7 +238,6 @@ Importar la colección manualmente:
 
 Descarga el archivo [Asterium_API.postman_collection.json](https://github.com/Asterium360/Aster-Server/blob/feature-routes/Asterium%20API.postman_collection.json)
 
-
 Abre Postman → pestaña Collections
 
 Clic en Import → selecciona el archivo JSON
@@ -248,7 +245,7 @@ Clic en Import → selecciona el archivo JSON
 Verás todas las peticiones organizadas por módulos con ejemplos de uso.
 Ideal para equipos: asegura que todos trabajen con la misma versión documentada de la API.
 
-## 👩‍💻 Equipo de desarrollo
+## 👩💻 Equipo de desarrollo
 
 | Rol | Integrante |
 |------|-------------|
@@ -262,3 +259,4 @@ Diseñado aplicando buenas prácticas de arquitectura, seguridad y documentació
 
 ✨ "El universo es infinito y nuestra curiosidad también."
 Asterium Backend Team – 2025
+
