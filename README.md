@@ -242,7 +242,7 @@ Ideal para equipos: asegura que todos trabajen con la misma versión documentada
 👩‍💻 Equipo de desarrollo
 Rol	Integrante
 🧭 Scrum Master	Anggy Pereira
-🪄 Backend Developer	Maryori Cruz
+🚀 Backend Developer	Maryori Cruz
 🚀 Backend Developer	Sofía Reyes
 
 📜 Notas finales
