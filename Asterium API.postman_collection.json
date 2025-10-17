@@ -1,0 +1,331 @@
+{
+	"info": {
+		"_postman_id": "d0aae761-6651-474b-85ff-af970d5c081d",
+		"name": "Asterium API",
+		"description": "API para gestionar usuarios y descubrimientos astronómicos.  \n  \nIncluye autenticación JWT y roles (admin y user).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46421564",
+		"_collection_link": "https://maryori-5224626.postman.co/workspace/Maryori's-Workspace~b4629cfb-3575-450f-84c7-237828081b35/collection/46421564-d0aae761-6651-474b-85ff-af970d5c081d?action=share&source=collection_link&creator=46421564"
+	},
+	"item": [
+		{
+			"name": "Registrar usuario",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"astroUser@mail.com\",\r\n  \"username\": \"astroUser\",\r\n  \"password\": \"12345678\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				},
+				"description": "### 📘 Registrar usuario\n\nCrea un nuevo usuario dentro del sistema Asterium.\n\n**Método:** `POST`  \n**URL:** `{{base_url}}/auth/register`\n\n---\n\n#### 🔸 Body (JSON)\n\n```\n{\n  \"email\": \"astroUser@mail.com\",\n  \"username\": \"astroUser\",\n  \"password\": \"12345678\"\n}\n\n ```\n\n---\n\n#### 🔹 Respuesta esperada (201 Created)\n\n```\n{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"user\": {\n    \"id\": 1,\n    \"email\": \"astroUser@mail.com\",\n    \"username\": \"astroUser\"\n  }\n}\n\n ```\n\n---\n\n#### 🔸 Errores posibles\n\n| Código | Causa | Descripción |\n| --- | --- | --- |\n| 400 | VALIDATION_ERROR | Datos inválidos (por ejemplo, email mal formado). |\n| 409 | Conflict | El email ya está registrado. |\n| 500 | Server Error | Error interno del servidor. |\n\n---\n\n#### 🧠 Notas\n\n- No requiere autenticación (`Auth: none`).\n    \n- El token devuelto deberá usarse para acceder a rutas protegidas (`Bearer Token`).\n    \n- La contraseña debe tener al menos **8 caracteres**.\n    \n\n---\n\n### 🌠 Ejemplo visual\n\n📍 _Usa esta petición como primer paso antes de probar login o creación de descubrimientos._"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"astroUser@mail.com\",\r\n  \"password\": \"12345678\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "StartFragment\n\n## 🌙 Iniciar sesión (Login)\n\nPermite al usuario autenticarse en el sistema y obtener un **token JWT** para acceder a rutas protegidas.\n\n**Método:** `POST`  \n**URL:** `{{base_url}}/auth/login`\n\n---\n\n### 🔸 Body (JSON)\n\n```\n{\n  \"email\": \"astroUser@mail.com\",\n  \"password\": \"12345678\"\n}\n\n ```\n\n---\n\n### 🔹 Respuesta esperada (200 OK)\n\n```\n{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n}\n\n ```\n\n---\n\n### 🔸 Errores posibles\n\n| Código | Causa | Descripción |\n| --- | --- | --- |\n| 400 | VALIDATION_ERROR | Datos inválidos (por ejemplo, formato de email incorrecto). |\n| 401 | Unauthorized | Email o contraseña incorrectos. |\n| 500 | Server Error | Error interno del servidor. |\n\n---\n\n### 🧠 Notas\n\n- No requiere autenticación (`Auth: none`).\n    \n- El **token** devuelto se usará en las cabeceras `Authorization: Bearer` para rutas protegidas.\n    \n- El token tiene un tiempo de expiración configurado en el backend.\n    \n\n---\n\n### 🌠 Ejemplo visual\n\n📍 _Usa esta petición justo después de registrarte, para obtener tu token de acceso._\n\nEndFragment"
+			},
+			"response": []
+		},
+		{
+			"name": "Listar descubrimientos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/asterium",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"asterium"
+					]
+				},
+				"description": "StartFragment\n\n## 🌌 Listar descubrimientos\n\nDevuelve una lista con todos los descubrimientos **publicados** por los usuarios.\n\nSolo pueden acceder los usuarios autenticados (con token JWT válido).\n\n**Método:** `GET`  \n**Ruta:** `{{base_url}}/asterium`  \n**Autenticación:** ✅ `Bearer Token`\n\n---\n\n### 🔹 Ejemplo de respuesta (200 OK)\n\n```\n[\n    {\n        \"id\": 5,\n        \"author_id\": 8,\n        \"title\": \"Descubrimiento de celulas\",\n        \"slug\": \"exoplaneta-003\",\n        \"excerpt\": null,\n        \"content_md\": \"Se encontró un nuevo celulas 🌍\",\n        \"status\": \"published\",\n        \"published_at\": \"2025-09-30T15:27:08.000Z\",\n        \"like_count\": 0,\n        \"created_at\": \"2025-09-30T15:27:08.000Z\",\n        \"updated_at\": \"2025-09-30T15:27:08.000Z\"\n    },\n    {\n        \"id\": 4,\n        \"author_id\": 8,\n        \"title\": \"Descubrimiento de Matt\",\n        \"slug\": \"matt-002\",\n        \"excerpt\": null,\n        \"content_md\": \"Se encontró un nuevo Matt 🌍\",\n        \"status\": \"published\",\n        \"published_at\": \"2025-09-30T14:59:26.000Z\",\n        \"like_count\": 0,\n        \"created_at\": \"2025-09-30T14:59:26.000Z\",\n        \"updated_at\": \"2025-09-30T14:59:26.000Z\"\n    }\n]\n\n ```\n\n---\n\n### 🔸 Errores posibles\n\n| Código | Causa | Descripción |\n| --- | --- | --- |\n| 401 | Unauthorized | No se ha enviado token o es inválido. |\n| 403 | Forbidden | El usuario no tiene permisos. |\n| 500 | Server Error | Error interno del servidor. |\n\n---\n\n### 🧠 Notas\n\n- Solo devuelve descubrimientos con estado `\"published\"`.\n    \n- Incluye información del autor (`username`, `email`).\n    \n- Se recomienda usar esta petición antes de consultar un descubrimiento individual.\n    \n\n---\n\n### 🌠 Ejemplo visual\n\n📍 _Muestra todos los descubrimientos visibles del sistema, ordenados por fecha de publicación._\n\nEndFragment"
+			},
+			"response": []
+		},
+		{
+			"name": "Lista por ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/asterium/{{asterium_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"asterium",
+						"{{asterium_id}}"
+					]
+				},
+				"description": "StartFragment\n\n🌌 **Detalle de descubrimiento**\n\nDevuelve la información detallada de un descubrimiento según su ID.\n\n**Método:** GET  \n**URL:** `{{base_url}}/asterium/:id`\n\n🔹 **Respuesta esperada (200 OK)**\n\n```\n{\n    \"id\": 5,\n    \"author_id\": 8,\n    \"title\": \"Descubrimiento de celulas\",\n    \"slug\": \"exoplaneta-003\",\n    \"excerpt\": null,\n    \"content_md\": \"Se encontró un nuevo celulas 🌍\",\n    \"status\": \"published\",\n    \"published_at\": \"2025-09-30T15:27:08.000Z\",\n    \"like_count\": 0,\n    \"created_at\": \"2025-09-30T15:27:08.000Z\",\n    \"updated_at\": \"2025-09-30T15:27:08.000Z\",\n    \"author\": {\n        \"id\": 8,\n        \"username\": \"mar1234\",\n        \"email\": \"mar@test.com\"\n    }\n}\n\n ```\n\n🔸 **Errores posibles**\n\n| Código | Causa | Descripción |\n| --- | --- | --- |\n| 404 | Not Found | No existe el descubrimiento. |\n| 401 | Unauthorized | Token no válido o ausente. |\n\n🧠 **Notas**\n\n- Requiere autenticación.\n    \n- Se usa cuando el usuario hace clic en un elemento para ver su detalle.\n    \n\n🌠 **Ejemplo visual**\n\n📍 Usa este endpoint en la vista “detalle” del frontend.\n\nEndFragment"
+			},
+			"response": []
+		},
+		{
+			"name": "Crear descubrimiento",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Descubrimiento de exoplanetas\",\r\n  \"slug\": \"exoplaneta-007\",\r\n  \"content_md\": \"Se encontró nuevos exoplanetas 🌍\",\r\n  \"status\": \"draft\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/asterium",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"asterium"
+					]
+				},
+				"description": "StartFragment\n\n🌌 **Crear descubrimiento**\n\nCrea un nuevo descubrimiento en la base de datos.\n\nSolo disponible para usuarios autenticados.\n\n**Método:** POST  \n**URL:** `{{base_url}}/asterium`\n\n🔹 **Respuesta esperada (201 Created)**\n\n```\n{\n  \"title\": \"Descubrimiento de exoplanetas\",\n  \"slug\": \"exoplaneta-007\",\n  \"content_md\": \"Se encontró nuevos exoplanetas 🌍\",\n  \"status\": \"draft\"\n}\n\n ```\n\n🔸 **Errores posibles**\n\n| Código | Causa | Descripción |\n| --- | --- | --- |\n| 400 | VALIDATION_ERROR | Datos incompletos o inválidos. |\n| 401 | Unauthorized | Token inválido o ausente. |\n\n🧠 **Notas**\n\n- Requiere **Auth: Bearer Token**.\n    \n- Verifica que los campos requeridos estén completos.\n    \n\n🌠 **Ejemplo visual**\n\n📍 Usa este endpoint después de iniciar sesión para crear un nuevo descubrimiento.\n\nEndFragment"
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar descubrimiento",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Descubrimiento de exoplanetas raras\",\r\n  \"slug\": \"exoplaneta-007\",\r\n  \"content_md\": \"Se encontró nuevos exoplanetas 🌍\",\r\n  \"status\": \"draft\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/asterium/{{asterium_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"asterium",
+						"{{asterium_id}}"
+					]
+				},
+				"description": "StartFragment\n\n🌌 **Actualizar descubrimiento**\n\nModifica los campos de un descubrimiento existente.\n\nSolo el autor o un administrador pueden hacerlo.\n\n**Método:** PUT  \n**URL:** `{{base_url}}/asterium/:id`\n\n🔹 **Respuesta esperada (200 OK)**\n\n```\n{\n    \"id\": 12,\n    \"author_id\": 15,\n    \"title\": \"Descubrimiento de exoplanetas raras\",\n    \"slug\": \"exoplaneta-007\",\n    \"excerpt\": null,\n    \"content_md\": \"Se encontró nuevos exoplanetas 🌍\",\n    \"status\": \"draft\",\n    \"published_at\": null,\n    \"like_count\": 0,\n    \"created_at\": \"2025-10-07T15:03:01.000Z\",\n    \"updated_at\": \"2025-10-07T15:15:27.091Z\"\n}\n\n ```\n\n🔸 **Errores posibles**\n\n| Código | Causa | Descripción |\n| --- | --- | --- |\n| 403 | Forbidden | No tiene permisos para editar. |\n| 404 | Not Found | El descubrimiento no existe. |\n\n🧠 **Notas**\n\n- Requiere autenticación.\n    \n- Solo el creador o un admin puede editar.\n    \n\n🌠 **Ejemplo visual**\n\n📍 Usa este endpoint para actualizar información en la vista de edición.\n\nEndFragment"
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar descubrimiento",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/asterium/{{asterium_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"asterium",
+						"{{asterium_id}}"
+					]
+				},
+				"description": "StartFragment\n\n🌌 **Eliminar descubrimiento**\n\nElimina definitivamente un descubrimiento del sistema.\n\n**Método:** DELETE  \n**URL:** `{{base_url}}/asterium/:id`\n\n🔹 **Respuesta esperada (200 OK)**\n\n```\n{\n  \"message\": \"Descubrimiento eliminado correctamente.\"\n}\n\n ```\n\n🔸 **Errores posibles**\n\n| Código | Causa | Descripción |\n| --- | --- | --- |\n| 404 | Not Found | No se encontró el descubrimiento. |\n| 403 | Forbidden | El usuario no tiene permisos. |\n\n🧠 **Notas**\n\n- Requiere autenticación.\n    \n- Solo el autor o el admin puede eliminarlo.\n    \n\n🌠 **Ejemplo visual**  \n  \n📍 Usa este endpoint para eliminar un registro desde el panel de administración.\n\nEndFragment"
+			},
+			"response": []
+		},
+		{
+			"name": "Promover usuario o administrador",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"mattwos@test.com\",\r\n    \"password\": \"mattwos123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/promote/{{user_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"promote",
+						"{{user_id}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				},
+				"description": "🛡️ Promover usuario a administrador\n\nPermite que un usuario con rol de administrador cambie el rol de otro usuario a \"admin\".\n\n🔹 Método:  \nPUT\n\n🔹 URL:  \n{{base_url}}/auth/promote/:id\n\n🔸 Requiere autenticación (Auth: Bearer Token de un admin)\n\n🔹 Ejemplo de solicitud:  \nPUT {{base_url}}/auth/promote/3\n\n🔹 Encabezados (Headers)  \nKey | Value  \n\\------------------ | --------------------------------------  \nContent-Type | application/json  \nAuthorization | Bearer {{token}}\n\n🔹 Cuerpo (Body)  \nNo requiere cuerpo en la solicitud (vacío).\n\n🔹 Respuesta esperada (200 OK)  \n{  \n\"message\": \"Usuario promovido a admin\",  \n\"id\": 1  \n}\n\n🔹 Errores posibles  \nCódigo | Causa | Descripción  \n\\-------|--------|-------------  \n401 | Unauthorized | Token inválido o ausente.  \n403 | Forbidden | El usuario autenticado no es admin.  \n404 | Not Found | Usuario con ese ID no encontrado.  \n500 | Server Error | Error interno del servidor.\n\n🌠 Ejemplo visual  \n📍 Usa esta ruta para asignar privilegios de administrador a otro usuario dentro del sistema."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "asterium_id",
+			"value": ""
+		}
+	]
+}
